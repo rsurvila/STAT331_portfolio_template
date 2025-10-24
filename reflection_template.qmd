@@ -49,14 +49,7 @@ tax_rev <- read_csv('https://atheobold.github.io/groupworthy-data-science/labs/i
 ```{r}
 #| label: wd-1-xlsx
 
-#PA 4
-
-military <- read_xlsx("gov_spending_per_capita.xlsx",
-                      sheet = "Share of Govt. spending",
-                      skip  = 7,
-                      n_max = 190,
-                      na = c(". .", "xxx", "..")
-                      )
+#NA
 
 ```
 
@@ -67,7 +60,7 @@ military <- read_xlsx("gov_spending_per_capita.xlsx",
 ```{r}
 #| label: wd-2-ex-1
 
-#Lab 3
+#Lab 3. This chunk satisfies the ability to select specified columns for this learning target.
 
 teacher_evals_clean <- teacher_evals |> 
   rename(sex = gender) |> 
@@ -97,13 +90,33 @@ teacher_evals_clean <- teacher_evals |>
 #| label: wd-2-ex-2
 
 
-
 ```
 
 -   Example selecting columns based on logical values (e.g., `starts_with()`, `ends_with()`, `contains()`, `where()`)
 
 ```{r}
 #| label: wd-2-ex-3
+
+#Lab 4. In this code chunk I changed the column identifiers for pivot_longer so instead of selecting multiple columns using a colon I used the function starts_with.
+
+ca_childcare |> 
+  select(census_region,
+         study_year,
+         mc_infant, 
+         mc_toddler,
+         mc_preschool) |> 
+  pivot_longer(cols = starts_with("mc_"),
+               names_to = "Age",
+               values_to = "Price") |> 
+  mutate(Age = fct_recode(Age,
+                              "Infant" = "mc_infant",
+                              "Toddler" = "mc_toddler",
+                              "Preschool" = "mc_preschool"),
+       Age = fct_relevel(Age, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool")
+       ) 
 
 ```
 
@@ -114,12 +127,45 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-3-numeric-ex-1
 
+#Lab 3. This code chunk shows that I can select specified columns and filter from the teacher_evals dataset for the amount of participants to be greater than 10.
+
+teacher_evals_clean <- teacher_evals |> 
+  rename(sex = gender) |> 
+  filter(no_participants > 10) |> 
+  mutate(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ as.character(.x))
+    )|> 
+  select(
+    course_id,
+    teacher_id,
+    question_no,
+    no_participants,
+    resp_share,
+    SET_score_avg,
+    percent_failed_cur,
+    academic_degree,
+    seniority,
+    sex)
+
 ```
 
 -   Numeric Example 2
 
 ```{r}
 #| label: wd-3-numeric-ex-1
+
+#Question 5 Lab 4. In this chunk I filtered the study year to only include the years 2008 and 2018.
+
+ca_childcare |> 
+  filter(study_year %in% c(2008, 2018)) |> 
+  group_by(census_region, study_year) |>  
+  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_household_income) |>
+  arrange(desc(`2018`))
 
 ```
 
@@ -128,6 +174,17 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-3-character
 
+#Lab 5
+
+inner_join(
+  x = DL_person,
+  y = get_fit_now_member,
+  by = "name"
+) |> 
+  filter(membership_status == "gold",
+         str_detect(plate_number,
+                    pattern = "H42W"))
+
 ```
 
 -   Character Example 2 (example must use functions from **stringr**)
@@ -135,12 +192,25 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-3-string
 
+#Lab 5. I used the str_detect function to identify the plate number of the suspect by the first 4 characters.
+
+inner_join(
+  x = DL_person,
+  y = get_fit_now_member,
+  by = "name"
+) |> 
+  filter(membership_status == "gold",
+         str_detect(plate_number,
+                    pattern = "H42W"))
+
 ```
 
 -   Date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-3-date
+
+
 
 ```
 
@@ -151,6 +221,21 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-4-numeric-ex-1
 
+#Lab 3. In this code chunk I 
+
+teacher_evals_clean |> 
+  group_by(
+    teacher_id,
+    course_id
+  ) |> 
+  summarize(
+    distinct_questions_asked = n_distinct(question_no)
+    ) |>
+  filter(
+    distinct_questions_asked == 9
+    ) |> 
+  kable()
+
 ```
 
 -   Numeric Example 2
@@ -158,12 +243,36 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-4-numeric-ex-2
 
+
+
 ```
 
 -   Factor Example 1 (renaming levels)
 
 ```{r}
 #| label: wd-4-factor-ex-1
+
+#Lab 4. Gorwing: I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice!
+
+
+ca_childcare |> 
+  select(census_region,
+         study_year,
+         mc_infant, 
+         mc_toddler,
+         mc_preschool) |> 
+  pivot_longer(cols = mc_infant : mc_preschool,
+               names_to = "Age",
+               values_to = "Price") |> 
+  mutate(Age = fct_recode(Age,
+                              "Infant" = "mc_infant",
+                              "Toddler" = "mc_toddler",
+                              "Preschool" = "mc_preschool"),
+       Age = fct_relevel(Age, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool")
+       ) 
 
 ```
 
@@ -216,6 +325,17 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-5-inner-ex-1
 
+#Lab 5. In this section I used an inner_join to combine the DL_person dataset and get_fit_now_member dataset.
+
+inner_join(
+  x = DL_person,
+  y = get_fit_now_member,
+  by = "name"
+) |> 
+  filter(membership_status == "gold",
+         str_detect(plate_number,
+                    pattern = "H42W"))
+
 ```
 
 -   `inner_join()` Example 2
@@ -248,12 +368,44 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-7-long
 
+#Lab 4. In this code chunk I used pivot_longer to create two new columns: age of the child (Age) and price of childcare (Price).
+
+ca_childcare |> 
+  select(census_region,
+         study_year,
+         mc_infant, 
+         mc_toddler,
+         mc_preschool) |> 
+  pivot_longer(cols = starts_with("mc_"),
+               names_to = "Age",
+               values_to = "Price") |> 
+  mutate(Age = fct_recode(Age,
+                              "Infant" = "mc_infant",
+                              "Toddler" = "mc_toddler",
+                              "Preschool" = "mc_preschool"),
+       Age = fct_relevel(Age, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool")
+       )
+
 ```
 
 -   `pivot_wider()`
 
 ```{r}
 #| label: wd-7-wide
+
+#Question 5 Lab 4. In this chunk I used pivot_wider to create two new columns, 2008 and 2018, that has the median household income for each California region. 
+
+ca_childcare |> 
+  filter(study_year %in% c(2008, 2018)) |> 
+  group_by(census_region, study_year) |>  
+  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_household_income) |>
+  arrange(desc(`2018`))
 
 ```
 
@@ -275,6 +427,36 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-2-1
+
+#Challenge 4. In this code chunk I used ggplot to plot the median price for childcare type based on the proportion of Californians that identify as Hispanic.
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare for \n various hispanic proportions in California",
+    subtitle = "Childcare type: <span style='color:#5D478B;'>center-based</span> and <span style='color:#6E8B3D;'>family-based</span> childcare"
+  ) +
+  theme_light() + 
+  scale_color_manual(values = c("#5D478B", "#6E8B3D")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = ""
+  )
 
 ```
 
@@ -305,6 +487,8 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: r-3-function-stops
+
+#NA 
 
 ```
 
@@ -347,12 +531,72 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-2-ex-1
 
+#Challenge 4.In this chunk I changed my original code to theme_light to produce a plot with light grey lines and axes to direct more attention towards the data.  
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare for \n various hispanic proportions in California",
+    subtitle = "Childcare type: <span style='color:#5D478B;'>center-based</span> and <span style='color:#6E8B3D;'>family-based</span> childcare"
+  ) +
+  theme_light() + 
+  scale_color_manual(values = c("#5D478B", "#6E8B3D")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = ""
+  )
+
 ```
 
 -   I can modify my colors to be accessible to anyone's eyes
 
 ```{r}
 #| label: dvs-2-ex-2
+
+#Challenge 4. I changed the code in this version so that my line colors would be seen by everyone, including color-blind folks!
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare for \n various hispanic proportions in California",
+    subtitle = "Childcare type: <span style='color:#0072B2;'>center-based</span> and <span style='color:#D55E00;'>family-based</span> childcare"
+  ) +
+  theme_light() + 
+  scale_color_manual(values = c("#0072B2", "#D55E00")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = ""
+  )
 
 ```
 
@@ -361,6 +605,36 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-2-ex-3
 
+#Challenge 4. In this challenge we were asked to create a plot answering a specific research question. My question was: Is there a difference between the full-time median price for childcare in a center-based setting and a family (in-home) setting in California for various Hispanic proportions? I made sure to include a plot title, axes titles, and a subtitle that clearly provided this context. 
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare for \n various hispanic proportions in California",
+    subtitle = "Childcare type: <span style='color:#0072B2;'>center-based</span> and <span style='color:#D55E00;'>family-based</span> childcare"
+  ) +
+  theme_light() + 
+  scale_color_manual(values = c("#0072B2", "#D55E00")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = ""
+  )
+
 ```
 
 -   I can modify the text in my plot to be more readable
@@ -368,12 +642,71 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-2-ex-4
 
+#Challenge 4. For this ggplot code I increased the font size using element_text for the plot title, subtitle, and axes titles. I also changed the angle of the y-axis to horizontal and centered it so it would be easier to read.
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare for \n various hispanic proportions in California",
+    subtitle = "Childcare type: <span style='color:#0072B2;'>center-based</span> and <span style='color:#D55E00;'>family-based</span> childcare"
+  ) +
+  theme_light() + 
+  scale_color_manual(values = c("#0072B2", "#D55E00")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = ""
+  )
+
 ```
 
 -   I can reorder my legend to align with the colors in my plot
 
 ```{r}
 #| label: dvs-2-ex-5
+
+#Challenge 4. I modified the code to include a legend and modified the legend to include the specific hex colors used for each childcare type (family based and center based).
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare \n for various hispanic proportions in California",
+    ) +
+  theme_light() + 
+  scale_color_manual(values = c("#5D478B", "#6E8B3D")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = "top"
+  )
 
 ```
 
@@ -383,6 +716,36 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: dvs-3-1-ex-1
+
+#Challenge 4. In this ggplot code I used a sage green (#6E8B3D) and purple (#5D478B) to identify the different childcare types. After seeing another student include these colors in his subtitle (which is a brilliant way to include the legend!) I did the same with these colors. 
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare for \n various hispanic proportions in California",
+    subtitle = "Childcare type: <span style='color:#5D478B;'>center-based</span> and <span style='color:#6E8B3D;'>family-based</span> childcare"
+  ) +
+  theme_light() + 
+  scale_color_manual(values = c("#5D478B", "#6E8B3D")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = ""
+  )
 
 ```
 
@@ -462,12 +825,14 @@ The following assignments satisfy the above criteria:
 
 ```
 
-**DVS-7: I show creativity in my tables.**
+**\*DVS-7: I show creativity in my tables.**
 
 -   I can use non-default colors
 
 ```{r}
 #| label: dvs-7-ex-1
+
+#NA 
 
 ```
 
@@ -475,6 +840,8 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: dvs-7-ex-2
+
+#NA 
 
 ```
 
@@ -501,14 +868,18 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-1-map-1
 
+#NA 
+
 ```
 
-**PE-2: I can write functions to reduce repetition in my code.**
+**\*PE-2: I can write functions to reduce repetition in my code.**
 
 -   Example 1: Function that operates on vectors
 
 ```{r}
 #| label: pe-2-1
+
+#NA
 
 ```
 
@@ -517,12 +888,16 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-2-2
 
+#NA
+
 ```
 
 -   Example 3: Function that operates on vectors *or* data frames
 
 ```{r}
 #| label: pe-2-3
+
+#NA
 
 ```
 
@@ -540,12 +915,16 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-3-map-1
 
+#NA 
+
 ```
 
 -   using a `map()` function with **more than one** input (e.g., `map_2()` or `pmap()`)
 
 ```{r}
 #| label: pe-3-map-2
+
+#NA
 
 ```
 
@@ -563,16 +942,48 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-4-2
 
+#Challenge 4. In this pipeline I created two new columns: Childcare (type of childcare parents used in California) and Median_Price (the median price for each childcare type), as well as changed the column showing proportion of people in California who are Hispanic (hispanic) so that I could add percentages to my x-axis. After this data wrangling I piped the dataset into ggplot to produce a plot showing the median price of childcare (family-based and center-based) based on the porportion of California residents who identify as Hispanic.  
+
+ca_childcare |>
+  mutate(hispanic = hispanic / 100) |>
+  pivot_longer(cols = c("mfccsa", "mcsa"),
+               names_to = "Childcare", 
+               values_to = "Median_Price") |> 
+  ggplot(aes(
+    x = hispanic,
+    y = Median_Price,
+    color = Childcare)) +
+  geom_smooth(lwd = 1.5) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  labs(
+    x = "Percentage of population that identifies as Hispanic or Latino",
+    y = "Median \n weekly \n price \n for \n childcare \n ($)",
+    color = "Childcare type",
+    title = "Family-based childcare versus center-based childcare for \n various hispanic proportions in California",
+    subtitle = "Childcare type: <span style='color:#5D478B;'>center-based</span> and <span style='color:#6E8B3D;'>family-based</span> childcare"
+  ) +
+  theme_light() + 
+  scale_color_manual(values = c("#5D478B", "#6E8B3D")) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    axis.title = element_text(size = 12),
+    axis.title.y = element_text(angle = 0, vjust = 0.5),
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
+    legend.position = ""
+  )
+
 ```
 
 ## Data Simulation & Statisical Models
 
-**DSSM-1: I can simulate data from a *variety* of probability models.**
+**\*DSSM-1: I can simulate data from a *variety* of probability models.**
 
 -   Example 1
 
 ```{r}
 #| label: dsm-1-1
+
+#NA
 
 ```
 
@@ -580,6 +991,8 @@ The following assignments satisfy the above criteria:
 
 ```{r}
 #| label: dsm-1-2
+
+#NA 
 
 ```
 
