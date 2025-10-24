@@ -127,7 +127,7 @@ ca_childcare |>
 ```{r}
 #| label: wd-3-numeric-ex-1
 
-#Lab 3. This code chunk shows that I can select specified columns and filter from the teacher_evals dataset for the amount of participants to be greater than 10.
+#Lab 3 Question 9. This code chunk shows that I can select specified columns and filter from the teacher_evals dataset for the amount of participants to be greater than 10.
 
 teacher_evals_clean <- teacher_evals |> 
   rename(sex = gender) |> 
@@ -465,6 +465,21 @@ ca_childcare |>
 ```{r}
 #| label: r-2-2
 
+#Lab 3 Question 9. In this example I efficiently 
+
+teacher_evals_clean |> 
+  group_by(
+    teacher_id,
+    course_id
+  ) |> 
+  summarize(
+    distinct_questions_asked = n_distinct(question_no)
+    ) |>
+  filter(
+    distinct_questions_asked == 9
+    ) |> 
+  kable()
+
 ```
 
 -   Example of function formatting
@@ -501,12 +516,38 @@ ca_childcare |>
 ```{r}
 #| label: dvs-1-num
 
+#Lab 4 Question 5. In this example I created a table (well-organized using the kable function) of the median household income for 2008 and 2018 for each of the ten California census regions. This code was changed from my original code. 
+
+ca_childcare |> 
+  filter(study_year %in% c(2008, 2018)) |> 
+  group_by(census_region, study_year) |>  
+  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_household_income,
+              names_prefix = "Median_household_income_for_") |>
+  arrange(desc(2018)) |> 
+  kable()
+
 ```
 
 -   At least one numeric variable and one categorical variable
 
 ```{r}
 #| label: dvs-2-num-cat
+
+#Lab 4 Question 5. This code is the same as above (modifications to my original code are still present) but since this table includes two numeric values as well as a categorical variable (California census regions) I included it in this learning target as well.
+
+ca_childcare |> 
+  filter(study_year %in% c(2008, 2018)) |> 
+  group_by(census_region, study_year) |>  
+  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_household_income,
+              names_prefix = "Median_household_income_for_") |>
+  arrange(desc(2018)) |> 
+  kable()
 
 ```
 
@@ -515,12 +556,81 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-cat
 
+#Lab 3 Question 6. I am proud of this line of code as I was able to complete this data visualization in one pipeline using the across function. I also received kudos for how the syntax is on point! 
+
+teacher_evals_clean |> 
+  summarize(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ n_distinct(.x))
+    )
+
 ```
 
 -   Dates (time series plot)
 
 ```{r}
 #| label: dvs-2-date
+
+#Lab 4 Question 7. In this code chunk, I created a plot of the median price for center-based childcare throughout the study years (2008 to 2018). I reordered the facets and legend, changed the plot colors, and size of the axes texts to match what Dr. T had.
+
+ca_childcare |> 
+  select(census_region,
+         study_year,
+         mc_infant, 
+         mc_toddler,
+         mc_preschool) |> 
+  pivot_longer(cols = mc_infant : mc_preschool,
+               names_to = "Age",
+               values_to = "Price") |> 
+  mutate(Age = fct_recode(Age,
+                              "Infant" = "mc_infant",
+                              "Toddler" = "mc_toddler",
+                              "Preschool" = "mc_preschool"),
+       Age = fct_relevel(Age, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool")
+       ) |> 
+  ggplot(aes(x = study_year,
+             y = Price,
+             color = fct_reorder2(.f = census_region,
+                                  .x = study_year,
+                                  .y = Price)
+             ) 
+           ) +
+  geom_point() +
+  facet_wrap(~ Age) + 
+  labs(
+    x = "Study Year",
+    y = " ",
+    color = "California Region",
+    title = "Weekly Median Price for Center-Based Childcare ($)"
+  ) +
+  scale_color_discrete(
+    name = "California Region"
+  ) +
+  geom_smooth(method = loess) + 
+  scale_y_continuous(limits = c(100, 500),
+                     breaks = seq(
+                       from = 0, 
+                       to = 500, 
+                       by = 100)) +
+  scale_x_continuous(limits = c(2008, 2018),
+                     breaks = seq(
+                       from = 2008,
+                       to = 2018,
+                       by = 2
+                     )) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1,
+    axis.text.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7),
+    legend.text = element_text(size = 9),
+    panel.spacing = unit(0.5, "lines") 
+  ) + 
+  scale_color_manual(values = plot_colors)
 
 ```
 
@@ -784,6 +894,15 @@ ca_childcare |>
 ```{r}
 #| label: dvs-4-across
 
+#Lab 3 Question 6. Using the across function, I was able to find how many unique instructors and courses in the teacher_evals_clean dataset.  
+
+teacher_evals_clean |> 
+  summarize(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ n_distinct(.x))
+    )
+
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -854,12 +973,23 @@ ca_childcare |>
 ```{r}
 #| label: pe-1-one-call
 
+
+
 ```
 
 -   using `across()`
 
 ```{r}
 #| label: pe-1-across
+
+#Lab 3 Question 6. This code was awarded as exemplary for having concise and on-point syntax. 
+
+teacher_evals_clean |> 
+  summarize(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ n_distinct(.x))
+    )
 
 ```
 
