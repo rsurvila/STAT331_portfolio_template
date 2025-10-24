@@ -210,7 +210,38 @@ inner_join(
 ```{r}
 #| label: wd-3-date
 
+#Lab 5 - finding the suspect. In this chunk I filtered the date by December (month) and 2017 (year). Originally I had used str_detect to find the character 201712 but to satisfy this learning target I changed the date column to actual dates and then filtered. 
 
+new_suspect <- 
+  drivers_license |> 
+  full_join(facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  filter(height >= 65 & height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S"
+         ) |>  
+  # rename column so keys match
+  rename(license_id = id) |> 
+  inner_join(person,
+             by = "license_id") |>
+  inner_join(facebook_event_checkin,
+             join_by(id == person_id)) |> 
+  mutate(date = ymd(date.y)) |>
+  filter(year(date) == 2017, 
+         month(date) == 12,
+         event_name.y == "SQL Symphony Concert") |> 
+  group_by(id,
+           name) |> 
+  summarize(event_count = n(),
+            .groups = "drop") |> 
+  filter(event_count == 3)
+
+interview |> 
+  semi_join(new_suspect,
+            by = join_by(person_id == id)) |> 
+  pull(transcript)
 
 ```
 
@@ -295,6 +326,39 @@ ca_childcare |>
 ```{r}
 #| label: wd-4-date
 
+#Lab 5 - finding the person who hired the murderer. Originally I had this code as two separate pipeline with a new object that joined the drivers_license dataset with the person dataset. However, I decided to follow in an exemplary student's and Dr. T's footsteps and joined separate datasets together in one pipeline while converting the date column into actual dates, then filtering this column for December 2017 events. 
+
+new_suspect <- 
+  drivers_license |> 
+  full_join(facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  filter(height >= 65 & height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S"
+         ) |>  
+  # rename column so keys match
+  rename(license_id = id) |> 
+  inner_join(person,
+             by = "license_id") |>
+  inner_join(facebook_event_checkin,
+             join_by(id == person_id)) |> 
+  mutate(date = ymd(date.y)) |>
+  filter(year(date) == 2017, 
+         month(date) == 12,
+         event_name.y == "SQL Symphony Concert") |> 
+  group_by(id,
+           name) |> 
+  summarize(event_count = n(),
+            .groups = "drop") |> 
+  filter(event_count == 3)
+
+interview |> 
+  semi_join(new_suspect,
+            by = join_by(person_id == id)) |> 
+  pull(transcript)
+
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -343,6 +407,39 @@ inner_join(
 ```{r}
 #| label: wd-5-inner-ex-2
 
+#Lab 5 - finding the suspect. From an exemplary student's work I learned how to join multiple datasets (specifically the person dataset with drivers license and then with the Facebook event checkin) to figure out who hired the murderer. 
+
+new_suspect <- 
+  drivers_license |> 
+  full_join(facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  filter(height >= 65 & height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S"
+         ) |>  
+  # rename column so keys match
+  rename(license_id = id) |> 
+  inner_join(person,
+             by = "license_id") |>
+  inner_join(facebook_event_checkin,
+             join_by(id == person_id)) |> 
+  mutate(date = ymd(date.y)) |>
+  filter(year(date) == 2017, 
+         month(date) == 12,
+         event_name.y == "SQL Symphony Concert") |> 
+  group_by(id,
+           name) |> 
+  summarize(event_count = n(),
+            .groups = "drop") |> 
+  filter(event_count == 3)
+
+interview |> 
+  semi_join(new_suspect,
+            by = join_by(person_id == id)) |> 
+  pull(transcript)
+
 ```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
@@ -351,6 +448,39 @@ inner_join(
 
 ```{r}
 #| label: wd-6-semi
+
+#Lab 5 - finding the suspect. I learned how to use a semi_join for this code chunk through this example Dr. T showed in class. Originally I had code that did not use the lubridate package and all these inner_joins, but I decided to change my code to fit this learning target. 
+
+new_suspect <- 
+  drivers_license |> 
+  full_join(facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  filter(height >= 65 & height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S"
+         ) |>  
+  # rename column so keys match
+  rename(license_id = id) |> 
+  inner_join(person,
+             by = "license_id") |>
+  inner_join(facebook_event_checkin,
+             join_by(id == person_id)) |> 
+  mutate(date = ymd(date.y)) |>
+  filter(year(date) == 2017, 
+         month(date) == 12,
+         event_name.y == "SQL Symphony Concert") |> 
+  group_by(id,
+           name) |> 
+  summarize(event_count = n(),
+            .groups = "drop") |> 
+  filter(event_count == 3)
+
+interview |> 
+  semi_join(new_suspect,
+            by = join_by(person_id == id)) |> 
+  pull(transcript)
 
 ```
 
@@ -465,20 +595,7 @@ ca_childcare |>
 ```{r}
 #| label: r-2-2
 
-#Lab 3 Question 9. In this example I efficiently 
 
-teacher_evals_clean |> 
-  group_by(
-    teacher_id,
-    course_id
-  ) |> 
-  summarize(
-    distinct_questions_asked = n_distinct(question_no)
-    ) |>
-  filter(
-    distinct_questions_asked == 9
-    ) |> 
-  kable()
 
 ```
 
@@ -486,6 +603,8 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: r-2-3
+
+#NA 
 
 ```
 
@@ -1037,6 +1156,15 @@ teacher_evals_clean |>
 
 ```{r}
 #| label: pe-3-across
+
+#Lab 3 Question 6. This code was awarded as exemplary for having concise and on-point syntax. 
+
+teacher_evals_clean |> 
+  summarize(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ n_distinct(.x))
+    )
 
 ```
 
