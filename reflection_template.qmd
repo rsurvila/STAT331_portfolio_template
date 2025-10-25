@@ -89,9 +89,22 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-2
 
-# 
+# Lab 5. In this code chunk I added the select function to remove columns which I found to be confusing when interpreting the results after running it. There were three columns that all started with id (id.x, id.y, and id.y.y) which were not helpful columns to have. 
 
-
+inner_join(
+  x = DL_person,
+  y = get_fit_now_member,
+  by = "name"
+) |> 
+  #don't care abut ID (there are three ID columns that could get confusing so want to get rid of them)
+  select(
+    -c(id.x,
+       id.y,
+       id.y.y)
+  ) |> 
+  filter(membership_status == "gold",
+         str_detect(plate_number,
+                    pattern = "H42W"))
 
 ```
 
@@ -100,7 +113,7 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-3
 
-#Lab 4. In this code chunk I changed the column identifiers for pivot_longer so instead of selecting multiple columns using a colon I used the function starts_with.
+#Lab 4. In this code chunk I changed the column identifiers for pivot_longer so instead of selecting multiple columns using a colon I used the function starts_with. This was seen in the first portion of the chunk before ggplot and was expertly crafted by Dr. T!
 
 ca_childcare |> 
   select(census_region,
@@ -119,7 +132,46 @@ ca_childcare |>
                                 "Infant",
                                 "Toddler",
                                 "Preschool")
-       ) 
+     ) |> 
+  ggplot(aes(x = study_year,
+             y = Price,
+             color = fct_reorder2(.f = census_region,
+                                  .x = study_year,
+                                  .y = Price)
+             ) 
+           ) +
+  geom_point() +
+  facet_wrap(~ Age) + 
+  labs(
+    x = "Study Year",
+    y = " ",
+    color = "California Region",
+    title = "Weekly Median Price for Center-Based Childcare ($)"
+  ) +
+  scale_color_discrete(
+    name = "California Region"
+  ) +
+  geom_smooth(method = loess) + 
+  scale_y_continuous(limits = c(100, 500),
+                     breaks = seq(
+                       from = 0, 
+                       to = 500, 
+                       by = 100)) +
+  scale_x_continuous(limits = c(2008, 2018),
+                     breaks = seq(
+                       from = 2008,
+                       to = 2018,
+                       by = 2
+                     )) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1,
+    axis.text.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7),
+    legend.text = element_text(size = 9),
+    panel.spacing = unit(0.5, "lines") 
+  ) + 
+  scale_color_manual(values = plot_colors)
 
 ```
 
@@ -177,7 +229,7 @@ ca_childcare |>
 ```{r}
 #| label: wd-3-character
 
-#Lab 5
+#Lab 5. In this code chunk I siltered the gym membership status to only include gold membership. 
 
 inner_join(
   x = DL_person,
@@ -255,7 +307,7 @@ interview |>
 ```{r}
 #| label: wd-4-numeric-ex-1
 
-#Lab 3. In this code chunk I 
+#Lab 3. In this code chunk I created a new variable, distinct_questions_asked, which counted the total amount of unique questions students asked in the survey. 
 
 teacher_evals_clean |> 
   group_by(
@@ -277,7 +329,29 @@ teacher_evals_clean |>
 ```{r}
 #| label: wd-4-numeric-ex-2
 
+#Challlenge 4. In this code chunk I modified my data summary table to include a column of the overall median childcare price based on type (family-based or center-based) for 5 groups of overall proportion of Californians who identified as Hispanic. With the summarize line I created a new value of the overall median of childcare price, which before was the median price for each county for each year.  
 
+ca_childcare |>
+  mutate(
+    Hispanic_group = cut(
+      hispanic,
+      breaks = c(0, 20, 40, 60, 80, 100),
+      labels = c("0–20%", "20–40%", "40–60%", "60–80%", "80–100%"),
+      include.lowest = TRUE,
+      right = FALSE
+    )
+  ) |>
+  pivot_longer(
+    cols = c(mfccsa, mcsa),
+    names_to = "Childcare_Type",
+    values_to = "Median_Price"
+  ) |>
+  group_by(Hispanic_group, Childcare_Type) |>
+  summarize(
+    Median_Price = median(Median_Price, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(Hispanic_group, Childcare_Type)
 
 ```
 
@@ -426,6 +500,41 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-4-string
+
+#Lab 4. In this code chunk after creating the table of 5 different Hispanic proportion groups by childcare type and overall median price by type, I modified my code to replace the values of childcare type by the words "family-based" for "mfccsa" and center-based by "mcsa" so that way it would be easier to read the summary table 
+
+ca_childcare |>
+  mutate(
+    Hispanic_group = cut(
+      hispanic,
+      breaks = c(0, 20, 40, 60, 80, 100),
+      labels = c("0–20%", "20–40%", "40–60%", "60–80%", "80–100%"),
+      include.lowest = TRUE,
+      right = FALSE
+    )
+  ) |>
+  pivot_longer(
+    cols = c(mfccsa, mcsa),
+    names_to = "Childcare_Type",
+    values_to = "Median_Price"
+  ) |>
+  group_by(Hispanic_group, Childcare_Type) |>
+  summarize(
+    Median_Price = median(Median_Price, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    Childcare_Type =
+      str_replace_all(Childcare_Type,
+                      "mcsa", 
+                      "Center-based"),
+    Childcare_Type = 
+      str_replace_all(Childcare_Type,
+                      "mfccsa",
+                      "Family-based")
+  )
+  arrange(Hispanic_group, Childcare_Type)
+           
 
 ```
 
