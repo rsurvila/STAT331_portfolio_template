@@ -89,6 +89,9 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-2
 
+# 
+
+
 
 ```
 
@@ -283,8 +286,9 @@ teacher_evals_clean |>
 ```{r}
 #| label: wd-4-factor-ex-1
 
-#Lab 4. Gorwing: I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice!
+#Growing: Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
 
+#I used fct_relevel to relevel the Age factor so that it would plot properly in the same order as Dr. T's. This was changed from my original code.  
 
 ca_childcare |> 
   select(census_region,
@@ -303,7 +307,46 @@ ca_childcare |>
                                 "Infant",
                                 "Toddler",
                                 "Preschool")
-       ) 
+       )  |> 
+  ggplot(aes(x = study_year,
+             y = Price,
+             color = fct_reorder2(.f = census_region,
+                                  .x = study_year,
+                                  .y = Price)
+             ) 
+           ) +
+  geom_point() +
+  facet_wrap(~ Age) + 
+  labs(
+    x = "Study Year",
+    y = " ",
+    color = "California Region",
+    title = "Weekly Median Price for Center-Based Childcare ($)"
+  ) +
+  scale_color_discrete(
+    name = "California Region"
+  ) +
+  geom_smooth(method = loess) + 
+  scale_y_continuous(limits = c(100, 500),
+                     breaks = seq(
+                       from = 0, 
+                       to = 500, 
+                       by = 100)) +
+  scale_x_continuous(limits = c(2008, 2018),
+                     breaks = seq(
+                       from = 2008,
+                       to = 2018,
+                       by = 2
+                     )) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1,
+    axis.text.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7),
+    legend.text = element_text(size = 9),
+    panel.spacing = unit(0.5, "lines") 
+  ) + 
+  scale_color_manual(values = plot_colors)
 
 ```
 
@@ -311,6 +354,71 @@ ca_childcare |>
 
 ```{r}
 #| label: wd-4-factor-ex-2
+
+#Growing: Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
+
+#I used fct_reorder to reorder the legend based on the census_region. I made text changes to other elements of the plot (y-axis and legend), and I reordered the facets so they went in the same order as Dr. T's. 
+
+library(RColorBrewer)
+plot_colors <- colorRampPalette(brewer.pal(7, "Accent"))(10)
+
+ca_childcare |> 
+  select(census_region,
+         study_year,
+         mc_infant, 
+         mc_toddler,
+         mc_preschool) |> 
+  pivot_longer(cols = mc_infant : mc_preschool,
+               names_to = "Age",
+               values_to = "Price") |> 
+  mutate(Age = fct_recode(Age,
+                              "Infant" = "mc_infant",
+                              "Toddler" = "mc_toddler",
+                              "Preschool" = "mc_preschool"),
+       Age = fct_relevel(Age, 
+                                "Infant",
+                                "Toddler",
+                                "Preschool")
+       ) |> 
+  ggplot(aes(x = study_year,
+             y = Price,
+             color = fct_reorder2(.f = census_region,
+                                  .x = study_year,
+                                  .y = Price)
+             ) 
+           ) +
+  geom_point() +
+  facet_wrap(~ Age) + 
+  labs(
+    x = "Study Year",
+    y = " ",
+    color = "California Region",
+    title = "Weekly Median Price for Center-Based Childcare ($)"
+  ) +
+  scale_color_discrete(
+    name = "California Region"
+  ) +
+  geom_smooth(method = loess) + 
+  scale_y_continuous(limits = c(100, 500),
+                     breaks = seq(
+                       from = 0, 
+                       to = 500, 
+                       by = 100)) +
+  scale_x_continuous(limits = c(2008, 2018),
+                     breaks = seq(
+                       from = 2008,
+                       to = 2018,
+                       by = 2
+                     )) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1,
+    axis.text.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7),
+    legend.text = element_text(size = 9),
+    panel.spacing = unit(0.5, "lines") 
+  ) + 
+  scale_color_manual(values = plot_colors)
 
 ```
 
@@ -368,6 +476,35 @@ interview |>
 ```{r}
 #| label: wd-5-left-ex-1
 
+#Lab 5 - finding suspect. In this chunk I redid some lines from my code before. I added a left_join to the bottom in order to pull the transcript of the murderer from the interview dataset. 
+
+drivers_license |> 
+  full_join(facebook_event_checkin,
+            by = join_by("id" == "person_id")) |> 
+  filter(height >= 65 & height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S"
+         ) |>  
+  # rename column so keys match
+  rename(license_id = id) |> 
+  inner_join(person,
+             by = "license_id") |>
+  inner_join(facebook_event_checkin,
+             join_by("id" == "person_id")) |> 
+  mutate(date = ymd(date.y)) |>
+  filter(year(date) == 2017, 
+         month(date) == 12,
+         event_name.y == "SQL Symphony Concert") |> 
+  group_by(id,
+           name) |> 
+  summarize(event_count = n(),
+            .groups = "drop") |> 
+  filter(event_count == 3) |> 
+  left_join(interview, 
+            by = join_by("id"=="person_id"))
+
 ```
 
 -   `right_join()` Example 1
@@ -375,12 +512,52 @@ interview |>
 ```{r}
 #| label: wd-5-right
 
+#Lab 5. Changed this code from before so instead of using inner_join I changed the dataset order and used right_join. 
+
+right_join(
+  x = get_fit_now_member,
+  y = DL_person,
+  by = "name"
+) |> 
+  filter(membership_status == "gold",
+         str_detect(plate_number,
+                    pattern = "H42W"))
+
 ```
 
 -   `left_join()` **or** `right_join()` Example 2
 
 ```{r}
 #| label: wd-5-left-right-ex-2
+
+#Lab 5. I changed the code from above so instead of using full_join to combine the drivers_license dataset with the facebook_event_checkin I used left_join.
+
+drivers_license |> 
+  full_join(facebook_event_checkin,
+            by = join_by("id" == "person_id")) |> 
+  filter(height >= 65 & height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S"
+         ) |>  
+  # rename column so keys match
+  rename(license_id = id) |> 
+  inner_join(person,
+             by = "license_id") |>
+  inner_join(facebook_event_checkin,
+             join_by("id" == "person_id")) |> 
+  mutate(date = ymd(date.y)) |>
+  filter(year(date) == 2017, 
+         month(date) == 12,
+         event_name.y == "SQL Symphony Concert") |> 
+  group_by(id,
+           name) |> 
+  summarize(event_count = n(),
+            .groups = "drop") |> 
+  filter(event_count == 3) |> 
+  left_join(interview, 
+            by = join_by("id"=="person_id"))
 
 ```
 
@@ -488,6 +665,36 @@ interview |>
 
 ```{r}
 #| label: wd-6-anti
+
+#Lab 5. I changed my code to include anti_join after joining the person dataset by the drivers_license and facebook_event_checkin datasets. I created a tiblle with the name of the person who is known not to have committed the murder (Jeremy Bowers) then used this tibble in the anti_join to get rid of the name Jeremy Bowers. 
+
+known_people <- tibble(name = "Jeremy Bowers")
+
+drivers_license |> 
+  full_join(facebook_event_checkin,
+            by = join_by(id == person_id)) |> 
+  filter(height >= 65 & height <= 67,
+         hair_color == "red",
+         gender == "female",
+         car_make == "Tesla",
+         car_model == "Model S"
+         ) |> 
+  rename(license_id = id) |> 
+  inner_join(person,
+             by = "license_id") |>
+  #anti_join to get ride of Jeremy Bowers
+  anti_join(known_people, by = "name") |> 
+  inner_join(facebook_event_checkin,
+             join_by(id == person_id)) |> 
+  mutate(date = ymd(date.y)) |>
+  filter(year(date) == 2017, 
+         month(date) == 12,
+         event_name.y == "SQL Symphony Concert") |> 
+  group_by(id,
+           name) |> 
+  summarize(event_count = n(),
+            .groups = "drop") |> 
+  filter(event_count == 3)
 
 ```
 
