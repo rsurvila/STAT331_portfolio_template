@@ -862,10 +862,15 @@ ca_childcare |>
 The following assignments satisfy the above criteria:
 
 -   Example 1
+    -   Lab 1: <file:///C:/STAT_531/Week%201/Lab%201/lab-1-student.html>
 -   Example 2
+    -   Lab 2
 -   Example 3
+    -   Challenge 2
 -   Example 4
+    -   Lab 4
 -   Example 5
+    -   Challenge 4
 
 **R-2: I can write well documented and tidy code.**
 
@@ -1298,6 +1303,61 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-3-1-ex-2
+
+#Challenge 4 - modifying colors. In this challenge I changed the color of my boxplots and points so that they matched the colors of an image of an elephant seal laying in grass that I found! 
+
+elephant_seal <- c("#9fa546",
+                   "#779026",
+                   "#b8c012",
+                   "#75502a",
+                   "#cfdbd7",
+                   "#394f5b",
+                   "#08271f",
+                   "#342708",
+                   "#83654f",
+                   "#b5bfc0",
+                   "#295812",
+                   "#254329",
+                   "#2d2a22",
+                   "#53623f")
+
+ggplot(data = surveys,
+       mapping = aes(x = species,
+                     y = weight,
+                     color = species)) + 
+       geom_jitter(alpha = 0.08) +
+       geom_boxplot(outliers = FALSE) + 
+       scale_color_manual(values = elephant_seal) +
+       coord_flip() +
+       labs(x = "Species",
+            y = "Weight (g)",
+            title = "Individual boxplots of weight (g) for each species") + 
+       scale_y_continuous(limits = c(0, 300),
+                          breaks = seq(from = 0, to = 300, by = 50)) +
+       theme(
+         plot.title = element_text(size = 18, 
+                                   face = "bold", 
+                                   family = "serif",
+                                   hjust = 0.5,
+                                   margin = margin(b = 10)),
+         axis.title.x = element_text(size = 16, 
+                                   face = "bold", 
+                                   family = "serif",
+                                   margin = margin(t = 10)),
+         axis.title.y = element_text(size = 16, 
+                                   face = "bold", 
+                                   family = "serif",
+                                   margin = margin(r = 10)),
+         axis.text.x = element_text(size = 12, 
+                                    family = "serif"),
+         axis.text.y = element_text(size = 12, 
+                                    face = "italic", 
+                                    family = "serif"),
+         axis.ticks = element_blank(),
+         panel.grid = element_blank(),
+         panel.border = element_rect(color = "black",
+                                      fill = NA),
+         panel.background = element_rect(fill = "white"))
 
 ```
 
