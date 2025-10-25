@@ -862,17 +862,15 @@ ca_childcare |>
 The following assignments satisfy the above criteria:
 
 -   Example 1
-    -   Lab 1. Attached as a file in my Git repository.
+    -   Lab 1
 -   Example 2
-    -   Lab 2. Attached as a file in my Git repository.
+    -   Lab 3
 -   Example 3
-    -   Challenge 2. Attached as a file in my Git repository.
+    -   Challenge 3
 -   Example 4
-    -   Lab 4. Attached as a file in my Git repository.
-    -   Changed my original lab to include table and figure captions.
+    -   Lab 4
 -   Example 5
-    -   Challenge 4. Attached as a file in my Git repository.
-    -   Changed my original lab to include table and figure captions.
+    -   Lab 5
 
 **R-2: I can write well documented and tidy code.**
 
@@ -918,7 +916,18 @@ ca_childcare |>
 ```{r}
 #| label: r-2-2
 
+#Lab 3 Question 11. In this code chunk I found Which instructors with one year of experience had the highest and lowest average percentage of students failing in the current semester across all their courses. I made sure to include white space, including for the or function, and indented after each pipe to make the code easier to read. This code was not modified from my resubmission but was modified for that resubmission.
 
+teacher_evals_clean |> 
+  filter(seniority == 1) |> 
+  group_by(teacher_id) |> 
+  summarise(avg_percentage_failing = mean(percent_failed_cur)) |> 
+  filter(
+    avg_percentage_failing == max(avg_percentage_failing) | 
+    avg_percentage_failing == min(avg_percentage_failing)
+  )  |> 
+  arrange(desc(avg_percentage_failing)) |> 
+  kable()
 
 ```
 
@@ -1495,18 +1504,7 @@ ca_childcare |>
 ```{r}
 #| label: dvs-6-ex-2
 
-#Lab 4 Question 5. 
-
-ca_childcare |> 
-  filter(study_year %in% c(2008, 2018)) |> 
-  group_by(census_region, study_year) |>  
-  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
-            .groups = "drop") |>
-  pivot_wider(names_from = study_year,
-              values_from = median_household_income,
-              names_prefix = "Median_household_income_for_") |>
-  arrange(desc(2018)) |> 
-  kable()
+#NA
 
 ```
 
@@ -1514,6 +1512,41 @@ ca_childcare |>
 
 ```{r}
 #| label: dvs-6-ex-3
+
+#Challenge 4. Creating a summary statistics table. I created my table in order of least percentage of California resident who are Hispanic (0%-20%) to greatest percentage of California residents who are Hispanic (80%-100%). I modified my code from the original code I submitted.
+
+ca_childcare |>
+  mutate(
+    Hispanic_group = cut(
+      hispanic,
+      breaks = c(0, 20, 40, 60, 80, 100),
+      labels = c("0–20%", "20–40%", "40–60%", "60–80%", "80–100%"),
+      include.lowest = TRUE,
+      right = FALSE
+    )
+  ) |>
+  pivot_longer(
+    cols = c(mfccsa, mcsa),
+    names_to = "Childcare_Type",
+    values_to = "Median_Price"
+  ) |>
+  group_by(Hispanic_group, Childcare_Type) |>
+  summarize(
+    Median_Price = median(Median_Price, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    Childcare_Type =
+      str_replace_all(Childcare_Type,
+                      "mcsa", 
+                      "Center-based"),
+    Childcare_Type = 
+      str_replace_all(Childcare_Type,
+                      "mfccsa",
+                      "Family-based")
+  ) |> 
+  arrange(Hispanic_group, Childcare_Type) |> 
+  kable(caption = "Table 1. Overall median price of the two different childcare types, family-based and center-based, used in California for 5 different proportions of people who identified as Hispanic.This data comes from the National Database of Childcare Prices, a source that gives childcare prices by childcare provider type, age of children, and county characteristics at the county level. Data was collected from 2008 to 2018.")
 
 ```
 
@@ -1647,7 +1680,40 @@ teacher_evals_clean |>
 ```{r}
 #| label: pe-4-1
 
+#Challenge 4. Creating a summary statistics table. I used the cut function which I checked to make sure it was not supersceded in order to convert numeric variables (Hispanic proportion) to categorical with 5 groups> 0%-20%, 20%-40%, 40%-60%, 60%-80%, and 80%-100%.
 
+ca_childcare |>
+  mutate(
+    Hispanic_group = cut(
+      hispanic,
+      breaks = c(0, 20, 40, 60, 80, 100),
+      labels = c("0–20%", "20–40%", "40–60%", "60–80%", "80–100%"),
+      include.lowest = TRUE,
+      right = FALSE
+    )
+  ) |>
+  pivot_longer(
+    cols = c(mfccsa, mcsa),
+    names_to = "Childcare_Type",
+    values_to = "Median_Price"
+  ) |>
+  group_by(Hispanic_group, Childcare_Type) |>
+  summarize(
+    Median_Price = median(Median_Price, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    Childcare_Type =
+      str_replace_all(Childcare_Type,
+                      "mcsa", 
+                      "Center-based"),
+    Childcare_Type = 
+      str_replace_all(Childcare_Type,
+                      "mfccsa",
+                      "Family-based")
+  ) |> 
+  arrange(Hispanic_group, Childcare_Type) |> 
+  kable(caption = "Table 1. Overall median price of the two different childcare types, family-based and center-based, used in California for 5 different proportions of people who identified as Hispanic.This data comes from the National Database of Childcare Prices, a source that gives childcare prices by childcare provider type, age of children, and county characteristics at the county level. Data was collected from 2008 to 2018.")
 
 ```
 
