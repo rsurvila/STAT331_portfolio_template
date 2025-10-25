@@ -229,7 +229,7 @@ ca_childcare |>
 ```{r}
 #| label: wd-3-character
 
-#Lab 5. In this code chunk I siltered the gym membership status to only include gold membership. 
+#Lab 5. In this code chunk I filtered the gym membership status to only include gold membership. 
 
 inner_join(
   x = DL_person,
@@ -947,6 +947,18 @@ teacher_evals_clean |>
 ```{r}
 #| label: r-3-example
 
+#Lab 4 Question 5. Changed the filtering to %in% instead of == upon recommendation from Dr. T then changed the order of operations to make more sense.
+
+ca_childcare |> 
+  filter(study_year %in% c(2008, 2018)) |> 
+  group_by(census_region, study_year) |>  
+  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_household_income,
+              names_prefix = "Median_household_income_for_") |> 
+  arrange(desc(2018))
+
 ```
 
 -   Example (function stops)
@@ -1395,6 +1407,30 @@ ggplot(data = surveys,
 ```{r}
 #| label: dvs-4-summarize
 
+#Challenge 4. Creating a summary statistics table. In this code chunk I found the median of the median price of childcare across all study years using summarize. I modified this code from my original submission but not after my resumbission.
+
+ca_childcare |>
+  mutate(
+    Hispanic_group = cut(
+      hispanic,
+      breaks = c(0, 20, 40, 60, 80, 100),
+      labels = c("0–20%", "20–40%", "40–60%", "60–80%", "80–100%"),
+      include.lowest = TRUE,
+      right = FALSE
+    )
+  ) |>
+  pivot_longer(
+    cols = c(mfccsa, mcsa),
+    names_to = "Childcare_Type",
+    values_to = "Median_Price"
+  ) |>
+  group_by(Hispanic_group, Childcare_Type) |>
+  summarize(
+    Median_Price = median(Median_Price, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(Hispanic_group, Childcare_Type)
+
 ```
 
 -   Example using `across()`
@@ -1579,7 +1615,16 @@ ca_childcare |>
 ```{r}
 #| label: pe-1-one-call
 
+#Lab 5. In this code chunk I filtered the gym membership status to only include gold membership as well as the plate number with the first 4 characters.
 
+inner_join(
+  x = DL_person,
+  y = get_fit_now_member,
+  by = "name"
+) |> 
+  filter(membership_status == "gold",
+         str_detect(plate_number,
+                    pattern = "H42W"))
 
 ```
 
