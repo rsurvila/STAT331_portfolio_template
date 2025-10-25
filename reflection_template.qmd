@@ -862,15 +862,17 @@ ca_childcare |>
 The following assignments satisfy the above criteria:
 
 -   Example 1
-    -   Lab 1: <file:///C:/STAT_531/Week%201/Lab%201/lab-1-student.html>
+    -   Lab 1
 -   Example 2
     -   Lab 2
 -   Example 3
     -   Challenge 2
 -   Example 4
     -   Lab 4
+    -   Changed my original lab to include table and figure captions.
 -   Example 5
     -   Challenge 4
+    -   Changed my orignal lab to include table and figure captions.
 
 **R-2: I can write well documented and tidy code.**
 
@@ -1365,6 +1367,8 @@ ggplot(data = surveys,
 
 ```{r}
 #| label: dvs-3-2
+
+
 
 ```
 
