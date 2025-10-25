@@ -1389,6 +1389,8 @@ ggplot(data = surveys,
 ```{r}
 #| label: dvs-3-2
 
+#Challenge 4. Creating a plot. In this code chunk I created lines 
+
 
 
 ```
