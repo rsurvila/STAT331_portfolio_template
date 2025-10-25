@@ -1347,12 +1347,60 @@ teacher_evals_clean |>
 ```{r}
 #| label: dvs-5-1
 
+#Challenge 4. In this challenge I found the overall median price across California regions and census years (2008-2018). 
+
+ca_childcare |>
+  mutate(
+    Hispanic_group = cut(
+      hispanic,
+      breaks = c(0, 20, 40, 60, 80, 100),
+      labels = c("0–20%", "20–40%", "40–60%", "60–80%", "80–100%"),
+      include.lowest = TRUE,
+      right = FALSE
+    )
+  ) |>
+  pivot_longer(
+    cols = c(mfccsa, mcsa),
+    names_to = "Childcare_Type",
+    values_to = "Median_Price"
+  ) |>
+  group_by(Hispanic_group, Childcare_Type) |>
+  summarize(
+    Median_Price = median(Median_Price, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    Childcare_Type =
+      str_replace_all(Childcare_Type,
+                      "mcsa", 
+                      "Center-based"),
+    Childcare_Type = 
+      str_replace_all(Childcare_Type,
+                      "mfccsa",
+                      "Family-based")
+  )
+  arrange(Hispanic_group, Childcare_Type)
+
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-5-2
+
+#Lab 3 Question 9. In this code chunk I was able to summarize the unique amount of questions asked across all teachers and courses. 
+
+teacher_evals_clean |> 
+  group_by(
+    teacher_id,
+    course_id
+  ) |> 
+  summarize(
+    distinct_questions_asked = n_distinct(question_no)
+    ) |>
+  filter(
+    distinct_questions_asked == 9
+    )
 
 ```
 
