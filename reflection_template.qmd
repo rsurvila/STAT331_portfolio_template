@@ -6,7 +6,7 @@ embed-resources: true
 layout: margin-left
 editor: visual
 execute: 
-  eval: false
+  eval: false #code won't work when rendered as a file
   echo: true
 ---
 
@@ -532,7 +532,7 @@ ca_childcare |>
       str_replace_all(Childcare_Type,
                       "mfccsa",
                       "Family-based")
-  )
+  ) |> 
   arrange(Hispanic_group, Childcare_Type)
            
 
@@ -862,17 +862,17 @@ ca_childcare |>
 The following assignments satisfy the above criteria:
 
 -   Example 1
-    -   Lab 1
+    -   Lab 1. Attached as a file in my Git repository.
 -   Example 2
-    -   Lab 2
+    -   Lab 2. Attached as a file in my Git repository.
 -   Example 3
-    -   Challenge 2
+    -   Challenge 2. Attached as a file in my Git repository.
 -   Example 4
-    -   Lab 4
+    -   Lab 4. Attached as a file in my Git repository.
     -   Changed my original lab to include table and figure captions.
 -   Example 5
-    -   Challenge 4
-    -   Changed my orignal lab to include table and figure captions.
+    -   Challenge 4. Attached as a file in my Git repository.
+    -   Changed my original lab to include table and figure captions.
 
 **R-2: I can write well documented and tidy code.**
 
@@ -1083,7 +1083,7 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-ex-1
 
-#Challenge 4.In this chunk I changed my original code to theme_light to produce a plot with light grey lines and axes to direct more attention towards the data.  
+#Challenge 4.Creating a plot. In this chunk I changed my original code to theme_light to produce a plot with light grey lines and axes to direct more attention towards the data.  
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1475,12 +1475,38 @@ teacher_evals_clean |>
 ```{r}
 #| label: dvs-6-ex-1
 
+#Lab 4 Question 5. In this example I created a table (well-organized using the kable function) of the median household income for 2008 and 2018 for each of the ten California census regions. I modified my column names from 2008 and 2018 to Median_household_income_for2008 and Median_household_income_for_2018 to better communicate what the values in the column represent. This code was changed from my original code. 
+
+ca_childcare |> 
+  filter(study_year %in% c(2008, 2018)) |> 
+  group_by(census_region, study_year) |>  
+  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_household_income,
+              names_prefix = "Median_household_income_for_") |>
+  arrange(desc(2018)) |> 
+  kable()
+
 ```
 
 -   I can modify the text in my table to be more readable (e.g., bold face for column headers)
 
 ```{r}
 #| label: dvs-6-ex-2
+
+#Lab 4 Question 5. 
+
+ca_childcare |> 
+  filter(study_year %in% c(2008, 2018)) |> 
+  group_by(census_region, study_year) |>  
+  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_wider(names_from = study_year,
+              values_from = median_household_income,
+              names_prefix = "Median_household_income_for_") |>
+  arrange(desc(2018)) |> 
+  kable()
 
 ```
 
