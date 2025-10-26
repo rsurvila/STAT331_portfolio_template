@@ -8,9 +8,13 @@ editor: visual
 execute: 
   eval: false #code won't work when rendered as a file
   echo: true
+  error: true
+toc: true
+code-tools: true
+theme: solar
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an A-.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -23,7 +27,7 @@ execute:
 ```{r}
 #| label: wd-1-csv-1
 
-#Lab 3
+#Lab 3. Question 2. 
 
 teacher_evals <- read_csv(here::here("Week 3", "Lab 3", "teacher_evals.csv"))
 
@@ -34,7 +38,7 @@ teacher_evals <- read_csv(here::here("Week 3", "Lab 3", "teacher_evals.csv"))
 ```{r}
 #| label: wd-1-csv-2
 
-#Lab 4
+#Lab 4. Question 0. 
 
 childcare_costs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-05-09/childcare_costs.csv')
 
@@ -113,7 +117,11 @@ inner_join(
 ```{r}
 #| label: wd-2-ex-3
 
-#Lab 4. In this code chunk I changed the column identifiers for pivot_longer so instead of selecting multiple columns using a colon I used the function starts_with. This was seen in the first portion of the chunk before ggplot and was expertly crafted by Dr. T!
+#Lab 4. Question 7. 
+
+#Growing: case_when() works, but you were asked to use a function from the forcats package to accomplish this! The same goes for factor()!
+
+#In this code chunk I changed the column identifiers for pivot_longer so instead of selecting multiple columns using a colon I used the function starts_with. This was seen in the first portion of the chunk before ggplot and was expertly crafted by Dr. T!I modified this code for the resubmission but not for this learning target.
 
 ca_childcare |> 
   select(census_region,
@@ -211,7 +219,11 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-3-numeric-ex-1
 
-#Question 5 Lab 4. In this chunk I filtered the study year to only include the years 2008 and 2018.
+#Question 5 Lab 4. 
+
+#Growing: I would recommend using the %in% operator instead of a ==! This will not always work for a vecor of values!
+
+#In this chunk I filtered the study year to only include the years 2008 and 2018.This chunk was modified for my resubmission but not for this learning target.
 
 ca_childcare |> 
   filter(study_year %in% c(2008, 2018)) |> 
@@ -265,7 +277,7 @@ inner_join(
 ```{r}
 #| label: wd-3-date
 
-#Lab 5 - finding the suspect. In this chunk I filtered the date by December (month) and 2017 (year). Originally I had used str_detect to find the character 201712 but to satisfy this learning target I changed the date column to actual dates and then filtered. 
+#Lab 5 - finding the suspect. In this chunk I filtered the date by December (month) and 2017 (year). Originally I had used str_detect to find the character 201712 but to satisfy this learning target I changed the date column to actual dates and then filtered. I took insipration from a past student's exemplary work.
 
 new_suspect <- 
   drivers_license |> 
@@ -307,7 +319,7 @@ interview |>
 ```{r}
 #| label: wd-4-numeric-ex-1
 
-#Lab 3. In this code chunk I created a new variable, distinct_questions_asked, which counted the total amount of unique questions students asked in the survey. 
+#Lab 3. Question 9. In this code chunk I created a new variable, distinct_questions_asked, which counted the total amount of unique questions students asked in the survey. 
 
 teacher_evals_clean |> 
   group_by(
@@ -329,7 +341,11 @@ teacher_evals_clean |>
 ```{r}
 #| label: wd-4-numeric-ex-2
 
-#Challlenge 4. In this code chunk I modified my data summary table to include a column of the overall median childcare price based on type (family-based or center-based) for 5 groups of overall proportion of Californians who identified as Hispanic. With the summarize line I created a new value of the overall median of childcare price, which before was the median price for each county for each year.  
+#Challlenge 4. 
+
+#Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Satisfactory: I can create tables which make my summaries clear to the reader.
+
+#Creating a summary table. In this code chunk I modified my data summary table to include a column of the overall median childcare price based on type (family-based or center-based) for 5 groups of overall proportion of Californians who identified as Hispanic. With the summarize line I created a new value of the overall median of childcare price, which before was the median price for each county for each year. This code was originally changed for my resubmission but not for this learning target. 
 
 ca_childcare |>
   mutate(
@@ -360,9 +376,11 @@ ca_childcare |>
 ```{r}
 #| label: wd-4-factor-ex-1
 
+#Lab 4. Question 7. 
+
 #Growing: Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
 
-#I used fct_relevel to relevel the Age factor so that it would plot properly in the same order as Dr. T's. This was changed from my original code.  
+#I used fct_relevel to relevel the Age factor so that it would plot properly in the same order as Dr. T's. This was changed from my original code for my resubmission but not to satisfy this learning target.  
 
 ca_childcare |> 
   select(census_region,
@@ -429,9 +447,9 @@ ca_childcare |>
 ```{r}
 #| label: wd-4-factor-ex-2
 
-#Growing: Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
+#Lab 4. Question 7. Growing: Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
 
-#I used fct_reorder to reorder the legend based on the census_region. I made text changes to other elements of the plot (y-axis and legend), and I reordered the facets so they went in the same order as Dr. T's. 
+#I used fct_reorder to reorder the legend based on the census_region. I made text changes to other elements of the plot (y-axis and legend), and I reordered the facets so they went in the same order as Dr. T's. This was changed from my original code for my resubmission but not to satisfy this learning target.  
 
 library(RColorBrewer)
 plot_colors <- colorRampPalette(brewer.pal(7, "Accent"))(10)
@@ -501,7 +519,11 @@ ca_childcare |>
 ```{r}
 #| label: wd-4-string
 
-#Lab 4. In this code chunk after creating the table of 5 different Hispanic proportion groups by childcare type and overall median price by type, I modified my code to replace the values of childcare type by the words "family-based" for "mfccsa" and center-based by "mcsa" so that way it would be easier to read the summary table 
+#Lab 4. Creating a summary table. 
+
+#Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Satisfactory: I can create tables which make my summaries clear to the reader.
+
+#In this code chunk after creating the table of 5 different Hispanic proportion groups by childcare type and overall median price by type, I modified my code to replace the values of childcare type by the words "family-based" for "mfccsa" and center-based by "mcsa" so that way it would be easier to read the summary table 
 
 ca_childcare |>
   mutate(
@@ -543,7 +565,7 @@ ca_childcare |>
 ```{r}
 #| label: wd-4-date
 
-#Lab 5 - finding the person who hired the murderer. Originally I had this code as two separate pipeline with a new object that joined the drivers_license dataset with the person dataset. However, I decided to follow in an exemplary student's and Dr. T's footsteps and joined separate datasets together in one pipeline while converting the date column into actual dates, then filtering this column for December 2017 events. 
+#Lab 5 - finding the person who hired the murderer. Originally I had this code as two separate pipelines with a new object that joined the drivers_license dataset with the person dataset. However, I decided to follow in an exemplary student's and Dr. T's footsteps and joined separate datasets together in one pipeline while converting the date column into actual dates, then filtering this column for December 2017 events. 
 
 new_suspect <- 
   drivers_license |> 
@@ -642,7 +664,7 @@ right_join(
 #Lab 5. I changed the code from above so instead of using full_join to combine the drivers_license dataset with the facebook_event_checkin I used left_join.
 
 drivers_license |> 
-  full_join(facebook_event_checkin,
+  left_join(facebook_event_checkin,
             by = join_by("id" == "person_id")) |> 
   filter(height >= 65 & height <= 67,
          hair_color == "red",
@@ -814,7 +836,11 @@ drivers_license |>
 ```{r}
 #| label: wd-7-long
 
-#Lab 4. In this code chunk I used pivot_longer to create two new columns: age of the child (Age) and price of childcare (Price).
+#Lab 4. Question 7. 
+
+#Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
+
+#In this code chunk I used pivot_longer to create two new columns: age of the child (Age) and price of childcare (Price).
 
 ca_childcare |> 
   select(census_region,
@@ -833,7 +859,46 @@ ca_childcare |>
                                 "Infant",
                                 "Toddler",
                                 "Preschool")
-       )
+       ) |> 
+  ggplot(aes(x = study_year,
+             y = Price,
+             color = fct_reorder2(.f = census_region,
+                                  .x = study_year,
+                                  .y = Price)
+             ) 
+           ) +
+  geom_point() +
+  facet_wrap(~ Age) + 
+  labs(
+    x = "Study Year",
+    y = " ",
+    color = "California Region",
+    title = "Weekly Median Price for Center-Based Childcare ($)"
+  ) +
+  scale_color_discrete(
+    name = "California Region"
+  ) +
+  geom_smooth(method = loess) + 
+  scale_y_continuous(limits = c(100, 500),
+                     breaks = seq(
+                       from = 0, 
+                       to = 500, 
+                       by = 100)) +
+  scale_x_continuous(limits = c(2008, 2018),
+                     breaks = seq(
+                       from = 2008,
+                       to = 2018,
+                       by = 2
+                     )) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1,
+    axis.text.x = element_text(size = 7),
+    axis.text.y = element_text(size = 7),
+    legend.text = element_text(size = 9),
+    panel.spacing = unit(0.5, "lines") 
+  ) + 
+  scale_color_manual(values = plot_colors)
 
 ```
 
@@ -842,7 +907,11 @@ ca_childcare |>
 ```{r}
 #| label: wd-7-wide
 
-#Question 5 Lab 4. In this chunk I used pivot_wider to create two new columns, 2008 and 2018, that has the median household income for each California region. 
+#Question 5 Lab 4. 
+
+#Growing: I would recommend using the %in% operator instead of a ==! This will not always work for a vecor of values!
+
+#In this chunk I used pivot_wider to create two new columns, 2008 and 2018, that has the median household income for each California region. 
 
 ca_childcare |> 
   filter(study_year %in% c(2008, 2018)) |> 
@@ -879,10 +948,16 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: r-2-1
 
-#Challenge 4. In this code chunk I used ggplot to plot the median price for childcare type based on the proportion of Californians that identify as Hispanic.
+#Challenge 4. Creating a plot. 
+
+#Growing: Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
+
+#In this code chunk I used ggplot to plot the median price for childcare type based on the proportion of Californians that identify as Hispanic.
 
 ca_childcare |>
+  #make variables in Hispanic column porpotions to plot as percentages
   mutate(hispanic = hispanic / 100) |>
+  #create three columns: Hispanic, Childcare_type, Median_price
   pivot_longer(cols = c("mfccsa", "mcsa"),
                names_to = "Childcare", 
                values_to = "Median_Price") |> 
@@ -890,8 +965,11 @@ ca_childcare |>
     x = hispanic,
     y = Median_Price,
     color = Childcare)) +
+  #create a line with width of 1.5
   geom_smooth(lwd = 1.5) +
+  #make x-axis numbers percentages
   scale_x_continuous(labels = scales::percent_format(accuracy = 0.8)) +
+  #create labels for x-axis, y-axis, plot title, and subtitle
   labs(
     x = "Percentage of population that identifies as Hispanic or Latino",
     y = "Median \n weekly \n price \n for \n childcare \n ($)",
@@ -900,13 +978,14 @@ ca_childcare |>
     subtitle = "Childcare type: <span style='color:#5D478B;'>center-based</span> and <span style='color:#6E8B3D;'>family-based</span> childcare"
   ) +
   theme_light() + 
+  #change color of two lines
   scale_color_manual(values = c("#5D478B", "#6E8B3D")) + 
   theme(
-    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
-    axis.title = element_text(size = 12),
-    axis.title.y = element_text(angle = 0, vjust = 0.5),
-    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5),
-    legend.position = ""
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5), #bolden plot title, increase font size, center title
+    axis.title = element_text(size = 12), #make font size 12
+    axis.title.y = element_text(angle = 0, vjust = 0.5), #center y-axis, make it easier to read by switching orientation
+    plot.subtitle = ggtext::element_markdown(size = 13, hjust = 0.5), #increase font size, center subtitle
+    legend.position = "" #get rid of legend 
   )
 
 ```
@@ -919,14 +998,20 @@ ca_childcare |>
 #Lab 3 Question 11. In this code chunk I found Which instructors with one year of experience had the highest and lowest average percentage of students failing in the current semester across all their courses. I made sure to include white space, including for the or function, and indented after each pipe to make the code easier to read. This code was not modified from my resubmission but was modified for that resubmission.
 
 teacher_evals_clean |> 
+  #only include first-year teachers
   filter(seniority == 1) |> 
+  #group variables in dataset by specific teachers
   group_by(teacher_id) |> 
+  #find the overall average of students who are failing in the current semester
   summarise(avg_percentage_failing = mean(percent_failed_cur)) |> 
+  #only include the max and mean of those averages
   filter(
     avg_percentage_failing == max(avg_percentage_failing) | 
     avg_percentage_failing == min(avg_percentage_failing)
   )  |> 
+  #have max at top and average percent failing decreasing
   arrange(desc(avg_percentage_failing)) |> 
+  #create a nice-looking table
   kable()
 
 ```
@@ -947,7 +1032,11 @@ teacher_evals_clean |>
 ```{r}
 #| label: r-3-example
 
-#Lab 4 Question 5. Changed the filtering to %in% instead of == upon recommendation from Dr. T then changed the order of operations to make more sense.
+#Lab 4 Question 5. 
+
+#Growing: I would recommend using the %in% operator instead of a ==! This will not always work for a vecor of values!
+
+#Changed the filtering to %in% instead of == upon recommendation from Dr. T then changed the order of operations to make more sense.
 
 ca_childcare |> 
   filter(study_year %in% c(2008, 2018)) |> 
@@ -979,7 +1068,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-1-num
 
-#Lab 4 Question 5. In this example I created a table (well-organized using the kable function) of the median household income for 2008 and 2018 for each of the ten California census regions. This code was changed from my original code. 
+#Lab 4 Question 5. 
+
+#Growing: I would recommend using the %in% operator instead of a ==! This will not always work for a vecor of values!
+
+#In this example I created a table (well-organized using the kable function) of the median household income for 2008 and 2018 for each of the ten California census regions. This code was changed from my original code. 
 
 ca_childcare |> 
   filter(study_year %in% c(2008, 2018)) |> 
@@ -999,7 +1092,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-num-cat
 
-#Lab 4 Question 5. This code is the same as above (modifications to my original code are still present) but since this table includes two numeric values as well as a categorical variable (California census regions) I included it in this learning target as well.
+#Lab 4 Question 5. 
+
+#Growing: I would recommend using the %in% operator instead of a ==! This will not always work for a vecor of values!
+
+#This code is the same as above (modifications to my original code are still present) but since this table includes two numeric values as well as a categorical variable (California census regions) I included it in this learning target as well.
 
 ca_childcare |> 
   filter(study_year %in% c(2008, 2018)) |> 
@@ -1019,14 +1116,15 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-cat
 
-#Lab 3 Question 6. I am proud of this line of code as I was able to complete this data visualization in one pipeline using the across function. I also received kudos for how the syntax is on point! 
+#Lab 3 Question 6. I am proud of this line of code as I was able to complete this data visualization in one pipeline using the across function. I also received kudos for how the syntax is on point! This gives us a table of how many teachers and courses there are overall. This code was modified to fit this learning target by adding the kable function.
 
 teacher_evals_clean |> 
   summarize(
     across(
       .cols = c(teacher_id, course_id),
       .fns = ~ n_distinct(.x))
-    )
+    ) |> 
+  kable()
 
 ```
 
@@ -1035,7 +1133,11 @@ teacher_evals_clean |>
 ```{r}
 #| label: dvs-2-date
 
-#Lab 4 Question 7. In this code chunk, I created a plot of the median price for center-based childcare throughout the study years (2008 to 2018). I reordered the facets and legend, changed the plot colors, and size of the axes texts to match what Dr. T had.
+#Lab 4 Question 7. 
+
+#Growing: Nice work pivoting and modifying the age variable! I am specifically looking for a tool that does the reordering of the legend for you since doing the reordering by hand is not a robust programming practice! Nice work changing the size of the x-axis text! Can you make this change to other aspects of the plot? Can you reorder the facets so they go in the same order as mine? Can you match my colors??? These are coming from a package and you will need to expand the color palette to get all 10 colors.
+
+#In this code chunk, I created a plot of the median price for center-based childcare throughout the study years (2008 to 2018). I reordered the facets and legend, changed the plot colors, and size of the axes texts to match what Dr. T had.
 
 ca_childcare |> 
   select(census_region,
@@ -1104,7 +1206,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-ex-1
 
-#Challenge 4.Creating a plot. In this chunk I changed my original code to theme_light to produce a plot with light grey lines and axes to direct more attention towards the data.  
+#Challenge 4.
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#Creating a plot. In this chunk I changed my original code to theme_light to produce a plot with light grey lines and axes to direct more attention towards the data.  
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1141,7 +1247,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-ex-2
 
-#Challenge 4. I changed the code in this version so that my line colors would be seen by everyone, including color-blind folks!
+#Challenge 4. Creating a plot. 
+
+##Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#I changed the code in this version so that my line colors would be seen by everyone, including color-blind folks!
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1178,7 +1288,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-ex-3
 
-#Challenge 4. In this challenge we were asked to create a plot answering a specific research question. My question was: Is there a difference between the full-time median price for childcare in a center-based setting and a family (in-home) setting in California for various Hispanic proportions? I made sure to include a plot title, axes titles, and a subtitle that clearly provided this context. 
+#Challenge 4. Creating a plot. 
+
+##Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#In this challenge we were asked to create a plot answering a specific research question. My question was: Is there a difference between the full-time median price for childcare in a center-based setting and a family (in-home) setting in California for various Hispanic proportions? I made sure to include a plot title, axes titles, and a subtitle that clearly provided this context. 
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1215,7 +1329,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-ex-4
 
-#Challenge 4. For this ggplot code I increased the font size using element_text for the plot title, subtitle, and axes titles. I also changed the angle of the y-axis to horizontal and centered it so it would be easier to read.
+#Challenge 4. Creating a plot. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#For this ggplot code I increased the font size using element_text for the plot title, subtitle, and axes titles. I also changed the angle of the y-axis to horizontal and centered it so it would be easier to read.
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1252,7 +1370,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-ex-5
 
-#Challenge 4. I modified the code to include a legend and modified the legend to include the specific hex colors used for each childcare type (family based and center based).
+#Challenge 4. Creating a plot. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#I modified the code to include a legend and modified the legend to include the specific hex colors used for each childcare type (family based and center based).
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1290,7 +1412,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-3-1-ex-1
 
-#Challenge 4. In this ggplot code I used a sage green (#6E8B3D) and purple (#5D478B) to identify the different childcare types. After seeing another student include these colors in his subtitle (which is a brilliant way to include the legend!) I did the same with these colors. 
+#Challenge 4. Creating a plot. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#In this ggplot code I used a sage green (#6E8B3D) and purple (#5D478B) to identify the different childcare types. After seeing another student include these colors in his subtitle (which is a brilliant way to include the legend!) I did the same with these colors. 
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1327,7 +1453,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-3-1-ex-2
 
-#Challenge 4 - modifying colors. In this challenge I changed the color of my boxplots and points so that they matched the colors of an image of an elephant seal laying in grass that I found! 
+#Challenge 4 - modifying colors. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#In this challenge I changed the color of my boxplots and points so that they matched the colors of an image of an elephant seal laying in grass that I found! 
 
 elephant_seal <- c("#9fa546",
                    "#779026",
@@ -1389,7 +1519,11 @@ ggplot(data = surveys,
 ```{r}
 #| label: dvs-3-2
 
-#Challenge 4. Creating a plot. In this code chunk I created two texts of which line correlates with which childcare type: family-based or center-based. This was another way to include the legend in the plot (I modified the chunk to incldue the annotation and got rid of the subtitle which was another way to show which childcare type correlated to which line). This chunk was modified from my original chunk, which was changed for my resubmission.   
+#Challenge 4. Creating a plot. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#In this code chunk I created two texts of which line correlates with which childcare type: family-based or center-based. This was another way to include the legend in the plot (I modified the chunk to incldue the annotation and got rid of the subtitle which was another way to show which childcare type correlated to which line). This chunk was modified from my original chunk, which was changed for my resubmission.   
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1434,7 +1568,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-3-3
 
-#Challenge 4. Creating a plot. In this code chunk I added dashed lines to represent the 5 groups of percentage Hispanic Californian residents (0%-20%, 20%-40%, 40%-60%, 60%-80%, and 80%-100%). So in total there are 5 lines in the plot. This code chunk was modified from my original chunk (modified for resubmission). 
+#Challenge 4. Creating a plot. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#In this code chunk I added dashed lines to represent the 5 groups of percentage Hispanic Californian residents (0%-20%, 20%-40%, 40%-60%, 60%-80%, and 80%-100%). So in total there are 5 lines in the plot. This code chunk was modified from my original chunk (modified for resubmission). 
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1480,7 +1618,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-4-summarize
 
-#Challenge 4. Creating a summary statistics table. In this code chunk I found the median of the median price of childcare across all study years using summarize. I modified this code from my original submission but not after my resumbission.
+#Challenge 4. Creating a summary statistics table. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader.
+
+#In this code chunk I found the median of the median price of childcare across all study years using summarize. I modified this code from my original submission but not after my resumbission.
 
 ca_childcare |>
   mutate(
@@ -1511,7 +1653,7 @@ ca_childcare |>
 ```{r}
 #| label: dvs-4-across
 
-#Lab 3 Question 6. Using the across function, I was able to find how many unique instructors and courses in the teacher_evals_clean dataset.  
+#Lab 3 Question 6. Using the across function, I was able to find how many unique instructors and courses there are in the teacher_evals_clean dataset.  
 
 teacher_evals_clean |> 
   summarize(
@@ -1529,7 +1671,11 @@ teacher_evals_clean |>
 ```{r}
 #| label: dvs-5-1
 
-#Challenge 4. In this challenge I found the overall median price across California regions and census years (2008-2018). 
+#Challenge 4. Creating a table. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader.
+
+#In this challenge I found the overall median price across California regions and census years (2008-2018). 
 
 ca_childcare |>
   mutate(
@@ -1593,7 +1739,11 @@ teacher_evals_clean |>
 ```{r}
 #| label: dvs-6-ex-1
 
-#Lab 4 Question 5. In this example I created a table (well-organized using the kable function) of the median household income for 2008 and 2018 for each of the ten California census regions. I modified my column names from 2008 and 2018 to Median_household_income_for2008 and Median_household_income_for_2018 to better communicate what the values in the column represent. This code was changed from my original code. 
+#Lab 4 Question 5. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#In this example I created a table (well-organized using the kable function) of the median household income for 2008 and 2018 for each of the ten California census regions. I modified my column names from 2008 and 2018 to Median_household_income_for_2008 and Median_household_income_for_2018 to better communicate what the values in the column represent. This code was changed from my original code. 
 
 ca_childcare |> 
   filter(study_year %in% c(2008, 2018)) |> 
@@ -1622,7 +1772,11 @@ ca_childcare |>
 ```{r}
 #| label: dvs-6-ex-3
 
-#Challenge 4. Creating a summary statistics table. I created my table in order of least percentage of California resident who are Hispanic (0%-20%) to greatest percentage of California residents who are Hispanic (80%-100%). I modified my code from the original code I submitted.
+#Challenge 4. Creating a summary statistics table. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#I created my table in order of least percentage of California residents who are Hispanic (0%-20%) to greatest percentage of California residents who are Hispanic (80%-100%). I modified my code from the original code I submitted.
 
 ca_childcare |>
   mutate(
@@ -1798,7 +1952,11 @@ teacher_evals_clean |>
 ```{r}
 #| label: pe-4-1
 
-#Challenge 4. Creating a summary statistics table. I used the cut function which I checked to make sure it was not supersceded in order to convert numeric variables (Hispanic proportion) to categorical with 5 groups> 0%-20%, 20%-40%, 40%-60%, 60%-80%, and 80%-100%.
+#Challenge 4. Creating a summary statistics table. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#I used the cut function which I checked to make sure it was not supersceded in order to convert numeric variables (Hispanic proportion) to categorical with 5 groups> 0%-20%, 20%-40%, 40%-60%, 60%-80%, and 80%-100%.
 
 ca_childcare |>
   mutate(
@@ -1840,7 +1998,11 @@ ca_childcare |>
 ```{r}
 #| label: pe-4-2
 
-#Challenge 4. In this pipeline I created two new columns: Childcare (type of childcare parents used in California) and Median_Price (the median price for each childcare type), as well as changed the column showing proportion of people in California who are Hispanic (hispanic) so that I could add percentages to my x-axis. After this data wrangling I piped the dataset into ggplot to produce a plot showing the median price of childcare (family-based and center-based) based on the porportion of California residents who identify as Hispanic.  
+#Challenge 4. Creating a summary table. 
+
+#Growing: Satisfactory: I can create tables which make my summaries clear to the reader. Satisfactory: I use plot modifications to make my visualizations clearer to the reader. Progressing: I show creativity in my visualizaitons.
+
+#In this pipeline I created two new columns: Childcare (type of childcare parents used in California) and Median_Price (the median price for each childcare type), as well as changed the column showing proportion of people in California who are Hispanic (hispanic) so that I could add percentages to my x-axis. After this data wrangling I piped the dataset into ggplot to produce a plot showing the median price of childcare (family-based and center-based) based on the porportion of California residents who identify as Hispanic.  
 
 ca_childcare |>
   mutate(hispanic = hispanic / 100) |>
@@ -1931,14 +2093,24 @@ summary(aov(weight ~ species, data = surveys))
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
+I have resubmitted every challenge and lab assignment that was not considered complete and had multiple "Growing" marks. By seeing the helpful remarks provided by Dr. T and by my classmates, I was able to see the ways my code formatting and content had faltered and how to make it better. For example, I struggled with creating a new factor for the ten county regions in California. Instead of using a function from the forcats package, I had used case_when, which did not hit on the learning goals of that week (working with factors in the forcats package). I had also heavily struggled with creating a copy of Dr. T's plot using the forcats package: I had written out all ten regions for the legend and hadn't reordered the facets the same way as theirs. By looking through my classmates' code and Dr. T's comments, I changed my code to use fct_collapse to make a new factor for California regions, fct_recode to rename the age levels, then fct_relevel to change the order of the age facets. Throughout the portfolio I modified my code in lab 5 to fit the different criteria, such as using the different joins and mutating variables to be dates.
+
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
+I regularly make an effort to push myself by completing the challenge assignments. Specifically, in challenge 2 not only did I explore the different themes of the weight by species plot, I explored the different colors for my second non-standard colors examples for DVS-3, as well as embedded the plot legend in the plot title for challenge 4. I had also changed my plot in challenge 4 to be creative and modified my code to use geom_segment and geom_text for each of the learning targets in DVS-3. I also was able to create a well-organized table for challenge 4 that had the names for childcare type, family-based or center-based, by using the str_replace function for the stringr WD-4 learning target.
+
 ## Peer Support & Collaboration
 
 <!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
 
+![](images/clipboard-1001673438.png){width="226"}
+
+![](images/clipboard-805748243.png)
+
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
+
+When I originally began collaborating for the practice activities I found it difficult to be the computer and only write out the code. After understanding the roles and responsibilities of each of the two roles, I began to follow how the computer was supposed to act and let the coder go through the code while I wrote it out. I made sure to always be open to the ideas of the coder and vice versa when I was the coder. I always tried to be conciensous and I remember for our latest assignment when we were working with stringr my classmate and I had to finish outside of classtime; I tried to keep the energy high and be patient and respectful.
