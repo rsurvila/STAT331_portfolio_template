@@ -100,22 +100,95 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-2
 
-# Lab 5. In this code chunk I added the select function to remove columns which I found to be confusing when interpreting the results after running it. There were three columns that all started with id (id.x, id.y, and id.y.y) which were not helpful columns to have. 
+# Lab 9. Growing: Can you format the percentages to have 2 decimal places and include a % symbol at the end? In this code chunk I included fmt_percent with decimals = 2 to add both the percentage sign and 2 decimal places. I also selected academic_degree, sen_level, and sex by removing the other columns in the evals dataset. 
 
-inner_join(
-  x = DL_person,
-  y = get_fit_now_member,
-  by = "name"
-) |> 
-  #don't care abut ID (there are three ID columns that could get confusing so want to get rid of them)
+evals |> 
+  filter(no_participants > 10) |> 
+  mutate(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ as.character(.x)),
+      sen_level = case_when(seniority <=4 ~ "junior",
+                               seniority >= 5  ~ "senior")
+    ) |> 
+  
+  distinct(teacher_id, .keep_all = TRUE) |> 
+
   select(
-    -c(id.x,
-       id.y,
-       id.y.y)
+    -c(course_id,
+       teacher_id,
+       question_no,
+       no_participants,
+       resp_share,
+       SET_score_avg,
+       percent_failed_cur,
+       question_no,
+       no_participants,
+       resp_share,
+       SET_score_avg,
+       percent_failed_cur)
+    ) |>
+
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "value"
   ) |> 
-  filter(membership_status == "gold",
-         str_detect(plate_number,
-                    pattern = "H42W"))
+  
+  count(variable, value) |> 
+  
+  group_by(variable) |> 
+  
+  mutate(
+    
+    prop = (n/sum(n)),
+    
+    value = recode(
+      value, 
+        "junior" = "Junior",
+        "senior" = "Senior",
+        "male" = "Male",
+        "female" = "Female",
+        "no_dgr" = "No degree",
+        "prof" = "Professor",
+        "ma" = "Masters",
+        "dr" = "Doctorate")
+  ) |> 
+  
+gt() |> 
+  tab_header(
+    title = "Demographic of Professors",
+    subtitle = "Student Evaluations at the University of Poland, Warsaw in 2020"
+  ) |> 
+  cols_label(
+    n = md("**Count**"),
+    prop = md("**%**"),
+    value = md("**Demographic**")
+  ) |> 
+  tab_spanner(
+    label = md("**Professors**"),
+    columns = c(n, prop)
+  ) |> 
+  tab_row_group(
+    label = md("**Seniority**"),
+    rows = value %in% c("Junior", "Senior")
+  ) |> 
+  tab_row_group(
+    group = md("**Sex**"),
+    rows = value %in% c("Female", "Male")
+  ) |> 
+  tab_row_group(
+    group = md("**Academic Degree**"),
+    rows = value %in% c("No degree", "Masters", "Doctorate", "Professor")
+  ) |> 
+  tab_style(
+    style = cell_fill(color = "lightgray"), 
+    locations = cells_row_groups()           
+  ) |> 
+  fmt_percent(
+    columns = prop,
+    decimals = 2
+  )
 
 ```
 
