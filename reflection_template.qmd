@@ -53,7 +53,14 @@ tax_rev <- read_csv('https://atheobold.github.io/groupworthy-data-science/labs/i
 ```{r}
 #| label: wd-1-xlsx
 
-#NA
+#PA 4. Question 1. 
+
+military <- read_xlsx("gov_spending_per_capita.xlsx",
+                      sheet = "Share of Govt. spending",
+                      skip  = 7,
+                      n_max = 190,
+                      na = c(". .", "xxx", "..")
+                      )
 
 ```
 
@@ -2034,7 +2041,7 @@ ca_childcare |>
 
 ```
 
-## Data Simulation & Statisical Models
+## Data Simulation & Statistical Models
 
 **\*DSSM-1: I can simulate data from a *variety* of probability models.**
 
