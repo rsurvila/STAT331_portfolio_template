@@ -1184,7 +1184,21 @@ ca_childcare |>
 ```{r}
 #| label: r-3-function-stops
 
-#NA 
+#Lab 7. Question 4. In this example I created a function which  
+
+rescale_01 <- function(fish){
+  if(!is.numeric(fish)){
+      stop()
+    }
+  
+    if (length(fish) <= 1) {
+      stop()
+    }
+  
+  (fish - min(fish, na.rm = TRUE)) /
+           (diff(range(fish, na.rm = TRUE)))
+  
+}
 
 ```
 
@@ -2172,7 +2186,11 @@ teacher_evals_clean |>
 ```{r}
 #| label: pe-3-map-1
 
-#NA 
+#Lab 10. Question 1. In this example I used map_int() to create a vector of integers for 10,000 simulations of a function which calculated the number of babies born in a hospital in a given night that were correctly given back to their parents. 
+
+results <- map_int(.x = 1:10000,
+                   .f = ~ randomBabies(4)
+                  )
 
 ```
 
