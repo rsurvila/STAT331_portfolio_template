@@ -100,7 +100,7 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-2-ex-2
 
-# Lab 9. Growing: Can you format the percentages to have 2 decimal places and include a % symbol at the end? In this code chunk I included fmt_percent with decimals = 2 to add both the percentage sign and 2 decimal places. I also selected academic_degree, sen_level, and sex by removing the other columns in the evals dataset. 
+# Lab 9. Question 6. Growing: Can you format the percentages to have 2 decimal places and include a % symbol at the end? In this code chunk I included fmt_percent with decimals = 2 to add both the percentage sign and 2 decimal places. I also selected academic_degree, sen_level, and sex by removing the other columns in the evals dataset. 
 
 evals |> 
   filter(no_participants > 10) |> 
@@ -126,7 +126,24 @@ evals |>
        no_participants,
        resp_share,
        SET_score_avg,
-       percent_failed_cur)
+       percent_failed_cur,
+       stud_grade_avg,
+       stud_grade_std,
+       stud_grade_var_coef,
+       percent_failed,
+       stud_grade_avg_cur,
+       stud_grade_std_cur,
+       stud_grade_var_coef_cur,
+       class_duration,
+       weekday,
+       time_of_day,
+       SET_score_1sem,
+       maximum_score,
+       seniority,
+       weekday,
+       time_of_day,
+       SET_score_1sem,
+       maximum_score)
     ) |>
 
   pivot_longer(
@@ -399,21 +416,85 @@ interview |>
 ```{r}
 #| label: wd-4-numeric-ex-1
 
-#Lab 3. Question 9. In this code chunk I created a new variable, distinct_questions_asked, which counted the total amount of unique questions students asked in the survey. 
+#Lab 9. Question 6. In this code chunk I made a proportions column for each of the three chosen variables (seniority level, sex, and academic degree) by using the mutate function. 
 
-teacher_evals_clean |> 
-  group_by(
-    teacher_id,
-    course_id
-  ) |> 
-  summarize(
-    distinct_questions_asked = n_distinct(question_no)
-    ) |>
-  filter(
-    distinct_questions_asked == 9
+evals |> 
+  filter(no_participants > 10) |> 
+  mutate(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ as.character(.x)),
+      sen_level = case_when(seniority <=4 ~ "junior",
+                               seniority >= 5  ~ "senior")
     ) |> 
-  kable()
+  
+  distinct(teacher_id, .keep_all = TRUE) |> 
 
+  select(
+    academic_degree,
+    sen_level,
+    sex) |>
+
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "value"
+  ) |> 
+  
+  count(variable, value) |> 
+  
+  group_by(variable) |> 
+  
+  mutate(
+    
+    prop = (n/sum(n)),
+    
+    value = recode(
+      value, 
+        "junior" = "Junior",
+        "senior" = "Senior",
+        "male" = "Male",
+        "female" = "Female",
+        "no_dgr" = "No degree",
+        "prof" = "Professor",
+        "ma" = "Masters",
+        "dr" = "Doctorate")
+  ) |> 
+  
+gt() |> 
+  tab_header(
+    title = "Demographic of Professors",
+    subtitle = "Student Evaluations at the University of Poland, Warsaw in 2020"
+  ) |> 
+  cols_label(
+    n = md("**Count**"),
+    prop = md("**%**"),
+    value = md("**Demographic**")
+  ) |> 
+  tab_spanner(
+    label = md("**Professors**"),
+    columns = c(n, prop)
+  ) |> 
+  tab_row_group(
+    label = md("**Seniority**"),
+    rows = value %in% c("Junior", "Senior")
+  ) |> 
+  tab_row_group(
+    group = md("**Sex**"),
+    rows = value %in% c("Female", "Male")
+  ) |> 
+  tab_row_group(
+    group = md("**Academic Degree**"),
+    rows = value %in% c("No degree", "Masters", "Doctorate", "Professor")
+  ) |> 
+  tab_style(
+    style = cell_fill(color = "lightgray"), 
+    locations = cells_row_groups()           
+  ) |> 
+  fmt_percent(
+    columns = prop,
+    decimals = 2
+  )
 ```
 
 -   Numeric Example 2
@@ -645,37 +726,29 @@ ca_childcare |>
 ```{r}
 #| label: wd-4-date
 
-#Lab 5 - finding the person who hired the murderer. Originally I had this code as two separate pipelines with a new object that joined the drivers_license dataset with the person dataset. However, I decided to follow in an exemplary student's and Dr. T's footsteps and joined separate datasets together in one pipeline while converting the date column into actual dates, then filtering this column for December 2017 events. 
+#Lab 5 - finding the person who hired the murderer. Mutated the date column to create an actual date variable in order to filter out for January 9th.
 
-new_suspect <- 
-  drivers_license |> 
-  full_join(facebook_event_checkin,
-            by = join_by(id == person_id)) |> 
-  filter(height >= 65 & height <= 67,
-         hair_color == "red",
-         gender == "female",
-         car_make == "Tesla",
-         car_model == "Model S"
-         ) |>  
-  # rename column so keys match
-  rename(license_id = id) |> 
-  inner_join(person,
-             by = "license_id") |>
-  inner_join(facebook_event_checkin,
-             join_by(id == person_id)) |> 
-  mutate(date = ymd(date.y)) |>
-  filter(year(date) == 2017, 
-         month(date) == 12,
-         event_name.y == "SQL Symphony Concert") |> 
-  group_by(id,
-           name) |> 
-  summarize(event_count = n(),
-            .groups = "drop") |> 
-  filter(event_count == 3)
-
-interview |> 
-  semi_join(new_suspect,
-            by = join_by(person_id == id)) |> 
+#join gym membership dataset with check in dataset, drivers license dataset, and interview dataset
+get_fit_now_member |> 
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id)) |> 
+  right_join(drivers_license, join_by(license_id == id)) |> 
+  left_join(interview, 
+            by = "person_id") |> 
+  #create check in date as actual date variable
+  mutate(
+    date = ymd(check_in_date)
+  ) |> 
+  #filter out for January 9th - when the interviewee saw the murderer, the gold gym membership, then plate number, and finally the membership number
+  filter(
+    month(date) == 01,
+    day(date) == 09,
+    membership_status == "gold",
+    str_detect(plate_number,
+               pattern = "H42W"),
+    id == "48Z55"
+  ) |>
+  #pull transcript from interview
   pull(transcript)
 
 ```
@@ -1833,7 +1906,7 @@ ca_childcare |>
   pivot_wider(names_from = study_year,
               values_from = median_household_income,
               names_prefix = "Median_household_income_for_") |>
-  arrange(desc(2018)) |> 
+  arrange(desc(Median_household_income_for_2018)) |> 
   kable()
 
 ```
@@ -1909,7 +1982,112 @@ ca_childcare |>
 ```{r}
 #| label: dvs-7-ex-2
 
-#NA 
+# Lab 9. Question 6. Used pivot_longer to create a more readable table that included the three selected variables: seniority level, sex, and academic degree. 
+
+evals |> 
+  filter(no_participants > 10) |> 
+  mutate(
+    across(
+      .cols = c(teacher_id, course_id),
+      .fns = ~ as.character(.x)),
+      sen_level = case_when(seniority <=4 ~ "junior",
+                               seniority >= 5  ~ "senior")
+    ) |> 
+  
+  distinct(teacher_id, .keep_all = TRUE) |> 
+
+  select(
+    -c(course_id,
+       teacher_id,
+       question_no,
+       no_participants,
+       resp_share,
+       SET_score_avg,
+       percent_failed_cur,
+       question_no,
+       no_participants,
+       resp_share,
+       SET_score_avg,
+       percent_failed_cur,
+       stud_grade_avg,
+       stud_grade_std,
+       stud_grade_var_coef,
+       percent_failed,
+       stud_grade_avg_cur,
+       stud_grade_std_cur,
+       stud_grade_var_coef_cur,
+       class_duration,
+       weekday,
+       time_of_day,
+       SET_score_1sem,
+       maximum_score,
+       seniority,
+       weekday,
+       time_of_day,
+       SET_score_1sem,
+       maximum_score)
+    ) |>
+
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "value"
+  ) |> 
+  
+  count(variable, value) |> 
+  
+  group_by(variable) |> 
+  
+  mutate(
+    
+    prop = (n/sum(n)),
+    
+    value = recode(
+      value, 
+        "junior" = "Junior",
+        "senior" = "Senior",
+        "male" = "Male",
+        "female" = "Female",
+        "no_dgr" = "No degree",
+        "prof" = "Professor",
+        "ma" = "Masters",
+        "dr" = "Doctorate")
+  ) |> 
+  
+gt() |> 
+  tab_header(
+    title = "Demographic of Professors",
+    subtitle = "Student Evaluations at the University of Poland, Warsaw in 2020"
+  ) |> 
+  cols_label(
+    n = md("**Count**"),
+    prop = md("**%**"),
+    value = md("**Demographic**")
+  ) |> 
+  tab_spanner(
+    label = md("**Professors**"),
+    columns = c(n, prop)
+  ) |> 
+  tab_row_group(
+    label = md("**Seniority**"),
+    rows = value %in% c("Junior", "Senior")
+  ) |> 
+  tab_row_group(
+    group = md("**Sex**"),
+    rows = value %in% c("Female", "Male")
+  ) |> 
+  tab_row_group(
+    group = md("**Academic Degree**"),
+    rows = value %in% c("No degree", "Masters", "Doctorate", "Professor")
+  ) |> 
+  tab_style(
+    style = cell_fill(color = "lightgray"), 
+    locations = cells_row_groups()           
+  ) |> 
+  fmt_percent(
+    columns = prop,
+    decimals = 2
+  ) 
 
 ```
 
