@@ -950,35 +950,10 @@ interview |>
 ```{r}
 #| label: wd-6-anti
 
-#Lab 5. I changed my code to include anti_join after joining the person dataset by the drivers_license and facebook_event_checkin datasets. I created a tiblle with the name of the person who is known not to have committed the murder (Jeremy Bowers) then used this tibble in the anti_join to get rid of the name Jeremy Bowers. 
+#Lab 5. I decided to follow in an exemplary student's footsteps and I changed my code to include anti_join so only people who had known interviews would be left. 
 
-known_people <- tibble(name = "Jeremy Bowers")
-
-drivers_license |> 
-  full_join(facebook_event_checkin,
-            by = join_by(id == person_id)) |> 
-  filter(height >= 65 & height <= 67,
-         hair_color == "red",
-         gender == "female",
-         car_make == "Tesla",
-         car_model == "Model S"
-         ) |> 
-  rename(license_id = id) |> 
-  inner_join(person,
-             by = "license_id") |>
-  #anti_join to get ride of Jeremy Bowers
-  anti_join(known_people, by = "name") |> 
-  inner_join(facebook_event_checkin,
-             join_by(id == person_id)) |> 
-  mutate(date = ymd(date.y)) |>
-  filter(year(date) == 2017, 
-         month(date) == 12,
-         event_name.y == "SQL Symphony Concert") |> 
-  group_by(id,
-           name) |> 
-  summarize(event_count = n(),
-            .groups = "drop") |> 
-  filter(event_count == 3)
+person |>
+    anti_join(interview, by = c("id" = "person_id")) 
 
 ```
 
@@ -1072,7 +1047,8 @@ ca_childcare |>
   summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
             .groups = "drop") |>
   pivot_wider(names_from = study_year,
-              values_from = median_household_income) |>
+              values_from = median_household_income,
+              names_prefix = "Median_household_income_for_") |>
   arrange(desc(`2018`))
 
 ```
@@ -2134,7 +2110,13 @@ teacher_evals_clean |>
 ```{r}
 #| label: pe-1-map-1
 
-#NA 
+#Lab 9. Question 2. Growing: Do variables have more than one data type? I changed my code so that the enframe() function was used and got rid of the [1] right after .x.
+
+#In this example I used a variant of the map() function (map_chr) to create a character vector to create a table of the unique types of variables found in the surveys dataset. 
+
+surveys |> 
+  map_chr(.f = ~ class(.x)) |> 
+  enframe()
 
 ```
 
