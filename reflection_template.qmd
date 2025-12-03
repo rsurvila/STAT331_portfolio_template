@@ -1150,8 +1150,23 @@ teacher_evals_clean |>
 ```{r}
 #| label: r-2-3
 
-#NA 
+#Lab 7. Question 4. In this chunk as I was creating a function which transformed the input vector into a rescaled vector I added comments to each step. 
 
+rescale_01 <- function(fish){
+  
+  #if the input vector is not numeric then the function stops and does not proceed
+  if(!is.numeric(fish)){
+      stop()
+    }
+  #if the input vector has a length greater than 1 (is not a single vector) then the function stops 
+  if (length(fish) <= 1) {
+      stop()
+    }
+  #transforms the input vector into a rescaled vector so that it only has a value from 0 to 1 
+  (fish - min(fish, na.rm = TRUE)) /
+           (diff(range(fish, na.rm = TRUE)))
+  
+}
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -1184,17 +1199,19 @@ ca_childcare |>
 ```{r}
 #| label: r-3-function-stops
 
-#Lab 7. Question 4. In this example I created a function which  
+#Lab 7. Question 4. In this example I created a function which makes a rescaled vector but, by using the function stops, only takes in a single vector. 
 
 rescale_01 <- function(fish){
+  
+  #if the input vector is not numeric then the function stops and does not proceed
   if(!is.numeric(fish)){
       stop()
     }
-  
-    if (length(fish) <= 1) {
+  #if the input vector has a length greater than 1 (is not a single vector) then the function stops 
+  if (length(fish) <= 1) {
       stop()
     }
-  
+  #transforms the input vector into a rescaled vector so that it only has a value from 0 to 1 
   (fish - min(fish, na.rm = TRUE)) /
            (diff(range(fish, na.rm = TRUE)))
   
@@ -1211,22 +1228,20 @@ rescale_01 <- function(fish){
 ```{r}
 #| label: dvs-1-num
 
-#Lab 4 Question 5. 
+#Lab 2. Question 4. I created multiple scatterplots between weight and hindfoot length for various rodent species (one scatterplot per species). 
 
-#Growing: I would recommend using the %in% operator instead of a ==! This will not always work for a vecor of values!
-
-#In this example I created a table (well-organized using the kable function) of the median household income for 2008 and 2018 for each of the ten California census regions. This code was changed from my original code. 
-
-ca_childcare |> 
-  filter(study_year %in% c(2008, 2018)) |> 
-  group_by(census_region, study_year) |>  
-  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
-            .groups = "drop") |>
-  pivot_wider(names_from = study_year,
-              values_from = median_household_income,
-              names_prefix = "Median_household_income_for_") |>
-  arrange(desc(2018)) |> 
-  kable()
+ggplot(data = surveys, 
+       mapping = aes(x = weight, 
+                     y = hindfoot_length)) + 
+       geom_point(alpha = 0.1) + 
+       labs(x = "Weight (g))", 
+            y = "",
+            title = "Species plots of hindfoot length (mm) by weight (g)",
+            subtitle = "Hindfoot length (mm)") + 
+       facet_wrap(~species, scales = "free") +
+       scale_y_continuous(limits = c(0, 65),
+                          breaks = seq(from = 0, to = 65, by = 20)) + 
+       theme_bw() 
 
 ```
 
@@ -1235,22 +1250,18 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-num-cat
 
-#Lab 4 Question 5. 
+#Lab 2 Question 10. I created a graph of how different rodent species vary by weight distribution.
 
-#Growing: I would recommend using the %in% operator instead of a ==! This will not always work for a vecor of values!
-
-#This code is the same as above (modifications to my original code are still present) but since this table includes two numeric values as well as a categorical variable (California census regions) I included it in this learning target as well.
-
-ca_childcare |> 
-  filter(study_year %in% c(2008, 2018)) |> 
-  group_by(census_region, study_year) |>  
-  summarise(median_household_income = median(mhi_2018, na.rm = TRUE),
-            .groups = "drop") |>
-  pivot_wider(names_from = study_year,
-              values_from = median_household_income,
-              names_prefix = "Median_household_income_for_") |>
-  arrange(desc(2018)) |> 
-  kable()
+ggplot(data = surveys,
+       mapping = aes(x = species,
+                     y = weight)) + 
+       geom_jitter(alpha = 0.1,
+                   color = "steelblue") +
+       geom_boxplot(outliers = FALSE) + 
+       labs(x = "Species",
+            y = "Weight (g)",
+            title = "Individual boxplots of weight (g) for each species") + 
+       theme(axis.text.x = element_text(angle = 45))
 
 ```
 
@@ -1259,15 +1270,23 @@ ca_childcare |>
 ```{r}
 #| label: dvs-2-cat
 
-#Lab 3 Question 6. I am proud of this line of code as I was able to complete this data visualization in one pipeline using the across function. I also received kudos for how the syntax is on point! This gives us a table of how many teachers and courses there are overall. This code was modified to fit this learning target by adding the kable function.
+#Challenge 3. Question 2. Growing comment: Technically, the percent() function has been superseded. Meaning, there are other functions you should use instead. Specifically, the label_percent() function has replaced this function. I changed my percent() to label_percent in the scale_y_continuous code. In this code chunk I created a plot which showed the proportion of evaluation ratings (either excellent or standard) for the three professor seniority levels. 
 
-teacher_evals_clean |> 
-  summarize(
-    across(
-      .cols = c(teacher_id, course_id),
-      .fns = ~ n_distinct(.x))
-    ) |> 
-  kable()
+ggplot(data = teacher_evals_compare,
+       mapping = aes(x = sen_level,
+                     fill = SET_level)) +
+  geom_bar(position = "fill") +
+  labs(x = "Years of Experience",
+       y = " ",
+       title = "Evaluation of Teachers' Use of Activities",
+       fill = "Evaluation Rating") +
+  scale_y_continuous(labels = label_percent()) +
+  theme(
+    panel.border = element_rect(color = "black"),
+    panel.grid.major = element_line(color = "gray70"),
+    panel.background = element_rect(fill = "white"),
+    legend.position = "top") + 
+  scale_fill_manual(values = c("#b890d8", "#ba955c"))
 
 ```
 
