@@ -2615,7 +2615,7 @@ I regularly make an effort to push myself by completing the challenge assignment
 
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
 
-When I originally began collaborating for the practice activities I found it difficult to be the computer and only write out the code. After understanding the roles and responsibilities of each of the two roles, I began to follow how the computer was supposed to act and let the coder go through the code while I wrote it out. I made sure to always be open to the ideas of the coder and vice versa when I was the coder. I always tried to be conciensous and I remember for our latest assignment when we were working with stringr my classmate and I had to finish outside of classtime; I tried to keep the energy high and be patient and respectful.
+When I originally began collaborating for the practice activities I found it difficult to be the computer and only write out the code. After understanding the roles and responsibilities of each of the two roles, I began to follow how the computer was supposed to act and let the coder go through the code while I wrote it out. I made sure to always be open to the ideas of the coder and vice versa when I was the coder. I always tried to be conscientious of who I was working with and their style of communicating. I remember for our PA 5 assignment when we were working with stringr my classmate and I had to finish outside of classtime. Although we had other tasks to accomplish outside this class, I tried to keep the energy high and be patient and respectful to create a healthy space for the both of us.
 
 ## Lightning Round Essays
 
