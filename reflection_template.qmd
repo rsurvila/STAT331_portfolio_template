@@ -2616,23 +2616,3 @@ I regularly make an effort to push myself by completing the challenge assignment
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
 
 When I originally began collaborating for the practice activities I found it difficult to be the computer and only write out the code. After understanding the roles and responsibilities of each of the two roles, I began to follow how the computer was supposed to act and let the coder go through the code while I wrote it out. I made sure to always be open to the ideas of the coder and vice versa when I was the coder. I always tried to be conscientious of who I was working with and their style of communicating. I remember for our PA 5 assignment when we were working with stringr my classmate and I had to finish outside of classtime. Although we had other tasks to accomplish outside this class, I tried to keep the energy high and be patient and respectful to create a healthy space for the both of us.
-
-## Lightning Round Essays
-
--   Finish the sentence with another student’s name: "If \[Isaiah Woodard\] doesn’t earn an A, then nobody should, because he was always willing to help out his fellow classmates like myself who were having trouble with the code, as well as go above and beyond what was asked of him in lab assignments such as making a beautiful plot for lab 4. Thus, he hits on the major targets needed to achieve an A."
-
--   What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
-
-I found the functions and simulations to be the most challenging part of class because both areas were too theoretical for me. I don't come from a coding background so as we were going through the examples of how to use these functions there was no physical example to tie these areas with and they therefore felt the most code intensive.
-
--   What was the easiest part of the class for you? Explain why.
-
-The easiest part of the class was learning ggplot() as I am a visual learner and had the easiest time understanding which functions from the package related to which parts of the plot. I also had the most experience in building plots in R.
-
--   What part of the class surprised or interested you the most? Explain why.
-
-Learning the data wrangling functions and pivoting functions interested me the most as I was able to directly apply this knowledge to my own research and data. I especially loved the pipe function since it made my code much easier to understand and replicate.
-
--   Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
-
-One piece of advice I'd give to a student just beginning a quarter of STAT 331 is that the professor is there to help you through some of the more difficult parts of the class, so you should utilize them! I know Dr. Theobold won't be teaching this class always, but I found whenever I had a question or needed clarification from the lab I could always go to their office hours and they could explain it to me in a way that made sense, making them an invaluable source of help.
