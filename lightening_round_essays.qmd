@@ -11,11 +11,11 @@ editor: visual
 
 2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
-    I found the functions and simulations to be the most challenging part of class because both areas were too theoretical for me. I don't come from a coding background so as we were going through the examples of how to use these functions there was no physical example to tie these areas with and they therefore felt the most code intensive.
+    I found the functions and simulations to be the most challenging part of class because both areas were too theoretical for me. I don't come from a coding background so as we were going through how to use these functions there were no physical examples to help me understand how to write the code.
 
 3.  What was the easiest part of the class for you? Explain why.
 
-    The easiest part of the class was learning ggplot() as I am a visual learner and had the easiest time understanding which functions from the package related to which parts of the plot. I also had the most experience in building plots in R.
+    The easiest part of the class was learning ggplot() as I am a visual learner and had the easiest time understanding which functions from the package related to which parts of the plot. I also had the most experience in specifically building plots in R.
 
 4.  What part of the class surprised or interested you the most? Explain why.
 
