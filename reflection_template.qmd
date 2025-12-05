@@ -2586,7 +2586,7 @@ summary(aov(weight ~ species, data = surveys))
 -   Example 3
 
 ```{r}
-#| label: dsm-2-2
+#| label: dsm-2-3
 
 #Lab 1. Question 10. In this example I carried out a t-test to compare tooth length between supplement methods. 
 
